@@ -5,12 +5,13 @@ Falling Cow Simulator -- pseudocode -- Carter, Jada, Will
   b. matplotlib
 
 1. Initialize parameters
-  a. mass
-  b. drag coefficient
+  a. mass (m)
+  b. drag coefficient (C_drag)
   c. small g
   d. t = 0
-  e. time step (tentatively 0.1)
-  f. initial position and velocity vectors
+  e. time step (tentatively 0.1) (dt)
+  f. initial position and velocity vectors (r, v)
+  g. Dict of empty arrays to store positions, velocities, total energies (param_history w/ keys r,v,E)
 
 2. Quantitative functions
   a. Total force vector
@@ -26,5 +27,23 @@ Falling Cow Simulator -- pseudocode -- Carter, Jada, Will
     ii. Calculates potential and kinetic energy from classical forms, adds them together to get total energy.
     iii. Returns these three energies.
 
-3. Style!
+3. Run code
+  a. While y>0:
+    i. Get total force vector
+    ii. Get movement step
+    iii. Get energies
+    iv. Update position, velocity, energy arrays
+   
+4. Plotting
+  a. Choose position, velocity, or energy from dict.
+  b. Create a time array of the appropriate length with the proper timestep.
+  c. Plot chosen quantity as a function of time.
+
+5. Style!
   a. Returning parameters (t, r, v), (Potential, KE, Total)
+
+6. Work allocation
+  a. Will: Energy computation and plotting
+  b. Jada: Initialization, total force vector
+  c. Carter: Structural code, movement step
+
