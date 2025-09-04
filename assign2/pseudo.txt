@@ -1,0 +1,21 @@
+Falling Cow Simulator -- pseudocode -- Carter, Jada, Will
+
+0. Import packages
+  a. numpy
+  b. matplotlib
+
+1. Initialize parameters
+  a. mass
+  b. drag coefficient
+  c. small g
+  d. t = 0
+  e. time step (tentatively 0.1)
+  f. initial position and velocity vectors
+
+2. Quantitative functions
+  a. Total force vector
+    i. For an inputted velocity vector, find the force caused by drag and gravity from given forms. Take into account components using numpy arrays and remember to include vector directionality.
+    ii. Add up the forces!
+    iii. Return this sum of forces as a 2D numpy array.
+  b. Movement step
+    i. Position, velocity, force

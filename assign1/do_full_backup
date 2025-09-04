@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ ! -d "./backups" ]; then
+  mkdir ./backups
+fi
+
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+backup_file="backups/full_backup_${timestamp}.tar.gz"
+tar -czf "$backup_file" ./src
+ls -t backups/full_backup_*.tar.gz | tail -n +4 | xargs -r rm --
