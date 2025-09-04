@@ -18,4 +18,13 @@ Falling Cow Simulator -- pseudocode -- Carter, Jada, Will
     ii. Add up the forces!
     iii. Return this sum of forces as a 2D numpy array.
   b. Movement step
-    i. Position, velocity, force
+    i. Current position, velocity, force, time step as inputs.
+    ii. Evaluates next set of parameters across a small time step (acceleration found from the force calculation, then new velocity from this acceleration, then the new position).
+    iii. Return these new parameters.
+  c. Potential, kinetic, and total energy
+    i. Input of position and velocity.
+    ii. Calculates potential and kinetic energy from classical forms, adds them together to get total energy.
+    iii. Returns these three energies.
+
+3. Style!
+  a. Returning parameters (t, r, v), (Potential, KE, Total)
