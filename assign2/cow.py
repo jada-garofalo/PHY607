@@ -39,9 +39,9 @@ while r[1]>0:
     r_new, v_new = position_velocity_update(r, v, F, dt)
     KE_new, PE_new, E_new = get_energies(r, v)
     
-    history["r"] = history["r"].append(r_new)
-    history["v"] = history["v"].append(v_new)
-    history["E"] = history["E"].append(E_new)
+    history["r"].append(r_new)
+    history["v"].append(v_new)
+    history["E"].append(E_new)
     
     r = r_new
     v = v_new
