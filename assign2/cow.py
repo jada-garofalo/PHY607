@@ -47,30 +47,25 @@ while r[1]>0:
     v = v_new
     t = t+dt
 
-
-# for all parts of the plotting section below:
-  # 'history' name can be changed accordingly
-  # contents of 'history; for each key is assumed to be in numpy array form
-  # 'np.' can be changed to whatever numpy is initialized as
-  # 'plt.' can be changed to whatever matplotlib.pyplot is initialized as
-  
 plot_selection = input('Type "position", "velocity", or "energy" to choose plot variable:')
 plot_time = np.array(range(0, len(history["E"])))*dt
 
 if plot_selection == "position":
-    plt.plot(plot_time, history["r"][:,0], plot_time, history["r"][:,1])
+    plot_position = np.array(history["r"])
+    plt.plot(plot_time, plot_position[:,0], plot_time, plot_position[:,1])
     plt.ylabel("position")
     plt.title("Cow Position vs Time")
     plt.legend(["x position", "y position"])
     
 elif plot_selection == "velocity":
-    plt.plot(plot_time, history["v"][:,0], plot_time, history["v"][:,1])
+    plot_velocity = np.array(history["v"])
+    plt.plot(plot_time, plot_velocity[:,0], plot_time, plot_velocity[:,1])
     plt.ylabel("velocity")
     plt.title("Cow Velocity vs Time")
     plt.legend(["x velocity", "y velocity"])
 
 elif plot_selection == "energy":
-    plt.plot(plot_time, history["E"][:,0], plot_time, history["E"][:,1])
+    plt.plot(plot_time, history["E"])
     plt.ylabel("energy")
     plt.title("Cow Energy vs Time")
 
@@ -78,5 +73,5 @@ else:
     print("invalid plot selection")
     
 plt.xlabel("time")
-
+plt.show()
 
