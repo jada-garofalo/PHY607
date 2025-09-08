@@ -1,9 +1,45 @@
-while r[1]>0:
-    F = get_force(v) #Change this to whatever Jada calls it
-    r_new, v_new = position_velocity_update(r, v, F, dt)
-    KE_new, PE_new, E_new = get_energies(r, v) #Change this to whatever Will calls it
+import matplotlib.pyplot as plt
+import numpy as np
+
+#global defs / initialization
+g = 9.81 #grav acel
+C_drag = 10 #drag force coeff
+t = 0 #initial time
+dt = 0.1 #time step
+m = 1000 #cow mass kg
+r = np.array([0,100])
+v = np.array([5,0])
+history = {
+        "r": [],
+        "v": [],
+        "E": []
+}
+
+def get_force(v):
+    F_grav = np.array([0, -m * g])
+    v_mag = np.linalg.norm(v)
+    F_drag = -C_drag * v_mag * v
+    F = F_grav + F_drag
+    return F
+
+def position_velocity_update(r, v, F, dt):
+    a = F/m
+    v_new = v + a*dt
+    r_new = r + v*dt
+    return r_new, v_new
     
-    history["r"] = history["r"].append(r_new) #change 'history' to whatever Jada calls it
+def get_energies(r, v):
+    PE_new = 0.5*m*(v[0]**2 + v[1]**2)
+    KE_new = m*g*r[1]
+    E_new = PE_new + KE_new
+    return PE_new, KE_new, E_new
+
+while r[1]>0:
+    F = get_force(v)
+    r_new, v_new = position_velocity_update(r, v, F, dt)
+    KE_new, PE_new, E_new = get_energies(r, v)
+    
+    history["r"] = history["r"].append(r_new)
     history["v"] = history["v"].append(v_new)
     history["E"] = history["E"].append(E_new)
     
@@ -38,20 +74,9 @@ elif plot_selection == "energy":
     plt.ylabel("energy")
     plt.title("Cow Energy vs Time")
 
-else
+else:
     print("invalid plot selection")
     
 plt.xlabel("time")
 
 
-def position_velocity_update(r, v, F, dt):
-    a = F/m
-    v_new = v + a*dt
-    r_new = r + v*dt
-    return r_new, v_new
-    
-def get_energies(r, v):
-    PE_new = 0.5*m*(v[0]**2 + v[1]**2)
-    KE_new = m*g*r[1]
-    E_new = PE_new + KE_new
-    return PE_new, KE_new, E_new
