@@ -3,12 +3,12 @@ import numpy as np
 
 #global defs / initialization
 g = 9.81 #grav acel
-C_drag = 10 #drag force coeff
+C_drag = 0 #drag force coeff
 t = 0 #initial time
-dt = 0.1 #time step
+dt = 0.001 #time step
 m = 1000 #cow mass kg
-r = np.array([0,100])
-v = np.array([5,0])
+r = np.array([0,1000])
+v = np.array([1,100])
 history = {
         "r": [],
         "v": [],
