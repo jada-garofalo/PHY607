@@ -5,7 +5,7 @@ import numpy as np
 g = 9.81 #grav acel
 C_drag = 0 #drag force coeff
 t = 0 #initial time
-dt = 0.00001 #time step
+dt = 0.001 #time step
 m = 1000 #cow mass kg
 r = np.array([0,1000])
 v = np.array([1,100])
@@ -36,11 +36,10 @@ def get_energies(r, v):
     E_new = PE_new + KE_new
     return PE_new, KE_new, E_new
 
+f = open("position_nodrag.out", "w")
+f.write(f"{t} {r[0]} {r[1]}\n")
+
 while dt <= 0.1:
-    if dt==0.001:
-        f = open("position_nodrag.out", "w")
-        f.write(f"{t} {r[0]}, {r[1]}\n")
-        
     while r[1]>0:
         F = get_force(v)
         r_new, v_new = position_velocity_update(r, v, F, dt)
@@ -56,7 +55,9 @@ while dt <= 0.1:
         v = v_new
         t = t+dt
         if dt==0.001:
-            f.write(f"{t} {r[0]}, {r[1]}\n")
+            f.write(f"{t} {r[0]} {r[1]}\n")
+    
+    f.close()
 
     plot_selection = input('Type "position", "velocity", or "energy" to choose plot variable:')
     plot_time = np.array(range(0, len(history["E"])))*dt
