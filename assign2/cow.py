@@ -60,7 +60,7 @@ while dt <= 0.1:
     f.close()
 
     plot_selection = input('Type "position", "velocity", or "energy" to choose plot variable:')
-    plot_time = np.array(range(0, len(history["E"])))*dt
+    plot_time = np.linspace(0,t,num=len(history["E"]))
 
     plot_position = np.array(history["r"])
     if plot_selection == "position":
@@ -90,10 +90,15 @@ while dt <= 0.1:
     else:
         print("invalid plot selection")
         
-    plt.plot(plot_position[:,0],plot_position[:,1])
+    plt.plot(plot_position[:,0],plot_position[:,1], label="Numerical")
+    
+    x_analytical = 1*plot_time
+    y_analytical = 1000+(100/1)*x_analytical-0.5*(g/1**2)*x_analytical**2
+    plt.plot(x_analytical, y_analytical, ls='--', label="Analytical")
     plt.ylabel("y position (m)")
     plt.xlabel("x position (m)")
     plt.title(f"Cow Path, dt = {dt}")
+    plt.legend()
     plt.show()
 
     plt.plot(plot_time, history["E"], plot_time, history["PE"], plot_time, history["KE"])
