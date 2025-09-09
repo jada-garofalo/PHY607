@@ -40,7 +40,16 @@ while dt <= 0.1:
     if dt==0.001:
         f = open("position_nodrag.out", "w")
         f.write(f"{t} {r[0]}, {r[1]}\n")
-        
+    r = np.array([0,1000])
+    v = np.array([1,100])
+    t=0
+    history = {
+            "r": [],
+            "v": [],
+            "E": [],
+            "PE": [],
+            "KE": []
+    }
     while r[1]>0:
         F = get_force(v)
         r_new, v_new = position_velocity_update(r, v, F, dt)
