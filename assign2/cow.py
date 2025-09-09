@@ -5,14 +5,16 @@ import numpy as np
 g = 9.81 #grav acel
 C_drag = 0 #drag force coeff
 t = 0 #initial time
-dt = 0.001 #time step
+dt = 0.00001 #time step
 m = 1000 #cow mass kg
 r = np.array([0,1000])
 v = np.array([1,100])
 history = {
         "r": [],
         "v": [],
-        "E": []
+        "E": [],
+        "PE": [],
+        "KE": []
 }
 
 def get_force(v):
@@ -34,44 +36,63 @@ def get_energies(r, v):
     E_new = PE_new + KE_new
     return PE_new, KE_new, E_new
 
-while r[1]>0:
-    F = get_force(v)
-    r_new, v_new = position_velocity_update(r, v, F, dt)
-    KE_new, PE_new, E_new = get_energies(r, v)
-    
-    history["r"].append(r_new)
-    history["v"].append(v_new)
-    history["E"].append(E_new)
-    
-    r = r_new
-    v = v_new
-    t = t+dt
+while dt <= 0.1:
+    while r[1]>0:
+        F = get_force(v)
+        r_new, v_new = position_velocity_update(r, v, F, dt)
+        KE_new, PE_new, E_new = get_energies(r, v)
+        
+        history["r"].append(r_new)
+        history["v"].append(v_new)
+        history["E"].append(E_new)
+        history["PE"].append(PE_new)
+        history["KE"].append(KE_new)
+        
+        r = r_new
+        v = v_new
+        t = t+dt
 
-plot_selection = input('Type "position", "velocity", or "energy" to choose plot variable:')
-plot_time = np.array(range(0, len(history["E"])))*dt
+    plot_selection = input('Type "position", "velocity", or "energy" to choose plot variable:')
+    plot_time = np.array(range(0, len(history["E"])))*dt
 
-if plot_selection == "position":
     plot_position = np.array(history["r"])
-    plt.plot(plot_time, plot_position[:,0], plot_time, plot_position[:,1])
-    plt.ylabel("position")
-    plt.title("Cow Position vs Time")
-    plt.legend(["x position", "y position"])
-    
-elif plot_selection == "velocity":
-    plot_velocity = np.array(history["v"])
-    plt.plot(plot_time, plot_velocity[:,0], plot_time, plot_velocity[:,1])
-    plt.ylabel("velocity")
-    plt.title("Cow Velocity vs Time")
-    plt.legend(["x velocity", "y velocity"])
+    if plot_selection == "position":
+        plt.plot(plot_time, plot_position[:,0], plot_time, plot_position[:,1])
+        plt.ylabel("position")
+        plt.title("Cow Position vs Time")
+        plt.legend(["x position", "y position"])
+        plt.xlabel("time")
+        plt.show()
 
-elif plot_selection == "energy":
-    plt.plot(plot_time, history["E"])
+    elif plot_selection == "velocity":
+        plot_velocity = np.array(history["v"])
+        plt.plot(plot_time, plot_velocity[:,0], plot_time, plot_velocity[:,1])
+        plt.ylabel("velocity")
+        plt.title("Cow Velocity vs Time")
+        plt.legend(["x velocity", "y velocity"])
+        plt.xlabel("time")
+        plt.show()
+
+    elif plot_selection == "energy":
+        plt.plot(plot_time, history["E"])
+        plt.ylabel("energy")
+        plt.title("Cow Energy vs Time")
+        plt.xlabel("time")
+        plt.show()
+
+    else:
+        print("invalid plot selection")
+        
+    plt.plot(plot_position[:,0],plot_position[:,1])
+    plt.ylabel("y position")
+    plt.xlabel("x position")
+    plt.title(f"Cow Path, dt = {dt}")
+    plt.show()
+
+    plt.plot(plot_time, history["E"], plot_time, history["PE"], plot_time, history["KE"])
     plt.ylabel("energy")
-    plt.title("Cow Energy vs Time")
-
-else:
-    print("invalid plot selection")
+    plt.title(f"Cow Energy vs Time, dt = {dt}")
+    plt.legend(["Total Energy", "Potential Energy", "Kinetic Energy"])
+    plt.show()
     
-plt.xlabel("time")
-plt.show()
-
+    dt = dt*10
