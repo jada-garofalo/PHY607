@@ -39,7 +39,7 @@ def get_energies(r, v):
 while dt <= 0.1:
     if dt==0.001:
         f = open("position_nodrag.out", "w")
-        f.write(f"{t} {r[0]}, {r[1]}")
+        f.write(f"{t} {r[0]}, {r[1]}\n")
         
     while r[1]>0:
         F = get_force(v)
@@ -56,7 +56,7 @@ while dt <= 0.1:
         v = v_new
         t = t+dt
         if dt==0.001:
-            f.write(f"{t} {r[0]}, {r[1]}")
+            f.write(f"{t} {r[0]}, {r[1]}\n")
 
     plot_selection = input('Type "position", "velocity", or "energy" to choose plot variable:')
     plot_time = np.array(range(0, len(history["E"])))*dt
