@@ -58,41 +58,43 @@ while dt <= 0.1:
     plot_position = np.array(history["r"])
     if plot_selection == "position":
         plt.plot(plot_time, plot_position[:,0], plot_time, plot_position[:,1])
-        plt.ylabel("position")
+        plt.ylabel("position (m)")
         plt.title("Cow Position vs Time")
         plt.legend(["x position", "y position"])
-        plt.xlabel("time")
+        plt.xlabel("time (s)")
         plt.show()
 
     elif plot_selection == "velocity":
         plot_velocity = np.array(history["v"])
         plt.plot(plot_time, plot_velocity[:,0], plot_time, plot_velocity[:,1])
-        plt.ylabel("velocity")
+        plt.ylabel("velocity (m/s)")
         plt.title("Cow Velocity vs Time")
         plt.legend(["x velocity", "y velocity"])
-        plt.xlabel("time")
+        plt.xlabel("time (s)")
         plt.show()
 
     elif plot_selection == "energy":
         plt.plot(plot_time, history["E"])
-        plt.ylabel("energy")
+        plt.ylabel("energy (J)")
         plt.title("Cow Energy vs Time")
-        plt.xlabel("time")
+        plt.xlabel("time (s)")
         plt.show()
 
     else:
         print("invalid plot selection")
         
     plt.plot(plot_position[:,0],plot_position[:,1])
-    plt.ylabel("y position")
-    plt.xlabel("x position")
+    plt.ylabel("y position (m)")
+    plt.xlabel("x position (m)")
     plt.title(f"Cow Path, dt = {dt}")
     plt.show()
 
     plt.plot(plot_time, history["E"], plot_time, history["PE"], plot_time, history["KE"])
-    plt.ylabel("energy")
+    plt.ylabel("energy (J)")
+    plt.xlabel("time (s)")
     plt.title(f"Cow Energy vs Time, dt = {dt}")
     plt.legend(["Total Energy", "Potential Energy", "Kinetic Energy"])
     plt.show()
     
     dt = dt*10
+
