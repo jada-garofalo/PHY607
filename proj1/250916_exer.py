@@ -1,23 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-dt = 0.01
+dt = 0.0001
 m = 1
 t0 = 0
-k = 0.25
+k = 2
 x0 = 0
 v0 = 1
 
 def F(x):
-    F = -k * x
-    return F
+    return -k * x / m
 
 def symplectic(x, v, t, dt):
     x_sym = [x]
     v_sym = [v]
     e_sym = [((0.5*m*(v**2)) + (0.5*k*(x**2)))]
     t_sym = [t]
-    while t<100:
+    while t<20:
         v = v + F(x) * dt
         x = x + v * dt
         t = t + dt
@@ -32,9 +31,11 @@ def euler_explicit(x, v, t, dt):
     v_eul = [v]
     e_eul = [((0.5*m*(v**2)) + (0.5*k*(x**2)))]
     t_eul = [t]
-    while t<100:
-        x = x + v * dt
-        v = v + F(x) * dt
+    while t<20:
+        x_old = x
+        v_old = v
+        x = x_old + v_old * dt
+        v = v_old + F(x_old) * dt
         t = t + dt
         x_eul.append(x)
         v_eul.append(v)
@@ -47,10 +48,11 @@ def rk2(x, v, t, dt):
     v_rk2 = [v]
     e_rk2 = [((0.5*m*(v**2)) + (0.5*k*(x**2)))]
     t_rk2 = [t]
-    while t<100:
-        x = x + 0.5 * v * dt
-        v = v + F(x) * dt
-        x = x + 0.5 * v * dt
+    while t<20:
+        x_mid = x + 0.5 * dt * v
+        v_mid = v + 0.5 * dt * F(x)
+        x = x + dt * v_mid
+        v = v + dt * F(x_mid)
         t = t + dt
         x_rk2.append(x)
         v_rk2.append(v)
