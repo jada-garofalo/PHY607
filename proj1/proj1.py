@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def rlc_circuit(method='Euler', L, R, C, id1_init, total_t, dt, plot=True):
+def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
     '''
     Numerically solves for current as a function of time in an RLC circuit
 
@@ -44,7 +44,7 @@ def rlc_circuit(method='Euler', L, R, C, id1_init, total_t, dt, plot=True):
         plt.grid(True)
         plt.show()
 
-def linear_charge(method='Midpoint', lambda, length, dx, eval_points,plot=True):
+def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=True):
     '''
     Numerically solves for the electric field due to a linear charge distribution
     
@@ -68,15 +68,15 @@ def linear_charge(method='Midpoint', lambda, length, dx, eval_points,plot=True):
             lower = i * dx
             upper = lower + dx
             if method == 'Left-hand Riemann':
-                E_total = E_total + (lambda * (x_test - lower) / abs(x_test - lower)**3) * dx
+                E_total = E_total + (lambda_lin * (x_test - lower) / abs(x_test - lower)**3) * dx
             
             elif method == 'Midpoint':
                 x_eval = lower + 0.5 * dx
-                E_total = E_total + (lambda * (x_test - x_eval) / abs(x_test - x_eval)**3) * dx
+                E_total = E_total + (lambda_lin * (x_test - x_eval) / abs(x_test - x_eval)**3) * dx
 
             elif method == 'Trapezoid':
-                E_left_comp = lambda * (x_test - lower) / abs(x_test - lower)**3
-                E_right_comp = lambda * (x_test - upper) / abs(x_test - upper)**3
+                E_left_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
+                E_right_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
                 E_total = E_total + 0.5 * (E_left_comp + E_right_comp) * dx
 
         E_total = E_total / (4 * np.pi * eps_n)
