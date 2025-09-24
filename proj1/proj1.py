@@ -45,12 +45,26 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
             id0_mid = id0[n] + 0.5 * dt * id1[n]
             id1_mid = id1[n] + 0.5 * dt * id2[n]
             id2_mid = -2 * alpha * id1_mid - omega_n**2 * id0_mid
+
             id0[n+1] = id0[n] + dt * id1_mid
             id1[n+1] = id1[n] + dt * id2_mid
 
     elif method=='RK4':
         for n in range(n_steps - 1):
-           return 
+            k1_d1 = id1[n]
+            k1_d2 = -2 * alpha * id1[n] - omega_n**2 * id0[n]
+
+            k2_d1 = id1[n] + 0.5 * dt * k1_d2
+            k2_d2 = -2 * alpha * (id1[n] + 0.5 * dt * k1_d2) - omega_n**2 * (id0[n] + 0.5 * dt * k1_d1)
+
+            k3_d1 = id1[n] + 0.5 * dt * k2_d2
+            k3_d2 = -2 * alpha * (id1[n] + 0.5 * dt * k2_d2) - omega_n**2 * (id0[n] + 0.5 * dt * k2_d1)
+
+            k4_d1 = id1[n] + dt * k3_d2
+            k4_d2 = -2 * alpha * (id1[n] + dt * k3_d2) - omega_n**2 * (id0[n] + dt * k3_d1)
+
+            id0[n+1] = id0[n] + (dt/6.0) * (k1_d1 + 2*k2_d1 + 2*k3_d1 + k4_d1)
+            id1[n+1] = id1[n] + (dt/6.0) * (k1_d2 + 2*k2_d2 + 2*k3_d2 + k4_d2)
 
     else:
         print("Please use a valid method input!")
@@ -105,8 +119,10 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
                 E_left_trap_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
                 E_right_trap_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
                 E_total_trap_comp = 0.5 * (E_left_comp + E_right_comp) * dx
+
                 x_eval = lower + 0.5 * dx
                 E_midpoint_comp = (lambda_lin * (x_test - x_eval) / abs(x_test - x_eval)**3) * dx
+
                 E_total = E_total + (E_total_trap_comp / 3) + (2 * E_midpoint_comp / 3)
 
             else:
