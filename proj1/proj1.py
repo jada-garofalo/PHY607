@@ -12,7 +12,7 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
     id1_init: initial change in current, amps per second
     total_t: total amount of time to sample over
     dt: step size, seconds
-    method: string, algorithm for numerical calculation (Euler (default), Symplectic, RK2)
+    method: string, algorithm for numerical calculation (Euler (default), Symplectic, RK2, RK4)
     plot: boolean, if True (default) generates plot of current and its derivatives as functions of time
 
     Returns
@@ -48,6 +48,10 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
             id0[n+1] = id0[n] + dt * id1_mid
             id1[n+1] = id1[n] + dt * id2_mid
 
+    elif method=='RK4':
+        for n in range(n_steps - 1):
+           return 
+
     else:
         print("Please use a valid method input!")
 
@@ -71,7 +75,7 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
     dx: step size, meters
     eval_points: array of test points
         for example, eval_points = np.linspace(-1.0, 2.0, 200)
-    method: string, algorithm for numerical integration (Left-Hand Riemann, Midpoint (default), Trapezoid)
+    method: string, algorithm for numerical integration (Left-Hand Riemann, Midpoint (default), Trapezoid, Simpson)
     plot: boolean, if True (default) plots
 
     Returns
@@ -96,6 +100,14 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
                 E_left_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
                 E_right_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
                 E_total = E_total + 0.5 * (E_left_comp + E_right_comp) * dx
+
+            elif method=='Simpson':
+                E_left_trap_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
+                E_right_trap_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
+                E_total_trap_comp = 0.5 * (E_left_comp + E_right_comp) * dx
+                x_eval = lower + 0.5 * dx
+                E_midpoint_comp = (lambda_lin * (x_test - x_eval) / abs(x_test - x_eval)**3) * dx
+                E_total = E_total + (E_total_trap_comp / 3) + (2 * E_midpoint_comp / 3)
 
             else:
                 print("Please use a valid method input!")
