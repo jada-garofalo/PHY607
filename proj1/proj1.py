@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
     '''
-    Numerically solves for current as a function of time in an RLC circuit
+    Numerically solves for current as a function of time in an RLC-series circuit
 
     Params
     L: inductance, henrys
@@ -70,7 +70,7 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
     length: length of charge distribution, meters (note, charge distribution will lay between x=0 and x=length)
     dx: step size, meters
     eval_points: array of test points
-        for example, eval_points = np.arange(-1.0, 2.1, 0.05)
+        for example, eval_points = np.linspace(-1.0, 2.0, 200)
     method: string, algorithm for numerical integration (Left-Hand Riemann, Midpoint (default), Trapezoid)
     plot: boolean, if True (default) plots
 
@@ -78,7 +78,7 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
     None
     '''
     eps_n = 8.854 * (10**(-12)) #vacuum permittivity
-    n_points = length / dx
+    n_points = int(length / dx)
     E_arr = []
     for x_test in eval_points:
         E_total = 0
@@ -104,7 +104,7 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
         E_arr.append(E_total)
 
     if plot:
-        plt.plot(eval_points, E_array)
+        plt.plot(eval_points, E_arr)
         plt.xlabel("x (m)")
         plt.ylabel("Electric Field (N/C)")
         plt.title(f"Electric Field due to Linear Charge using {method} Integration")
