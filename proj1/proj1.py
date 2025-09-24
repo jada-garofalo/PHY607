@@ -6,12 +6,12 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
     Numerically solves for current as a function of time in an RLC circuit
 
     Params
-    L: inductance, H
+    L: inductance, henrys
     R: resistance, ohms
     C: capacitance, farads
     id1_init: initial change in current, amps per second
     total_t: total amount of time to sample over
-    dt: step size
+    dt: step size, seconds
     method: string, algorithm for numerical calculation (Euler (default), Symplectic, RK2)
     plot: boolean, if True (default) generates plot of current and its derivatives as functions of time
 
@@ -22,9 +22,9 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
     omega_n = (L*C)**(-0.5)
     n_steps = int(total_t / dt)
 
-    id0 = np.zeros(n_steps)
-    id1 = np.zeros(n_steps)
-    id2 = np.zeros(n_steps)
+    id0 = np.zeros(n_steps) #0th derivative
+    id1 = np.zeros(n_steps) #1st derivative
+    id2 = np.zeros(n_steps) #2nd derivative
 
     id1[0] = id1_init
     
@@ -33,6 +33,23 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
             id2[n] = -2 * alpha * id1[n] - omega_n**2 * id0[n]
             id1[n+1] = id1[n] + dt * id2[n]
             id0[n+1] = id0[n] + dt * id1[n]
+
+    elif method=='Symplectic':
+        for n in range(n_steps - 1):
+            id2[n] = -2 * alpha * id1[n] - omega_n**2 * id0[n]
+            id1[n+1] = id1[n] + dt * id2[n]
+            id0[n+1] = id0[n] + dt * id1[n+1]
+ 
+    elif method=='RK2':
+        for n in range(n_steps - 1):
+            id0_mid = id0[n] + 0.5 * dt * id1[n]
+            id1_mid = id1[n] + 0.5 * dt * id2[n]
+            id2_mid = -2 * alpha * id1_mid - omega_n**2 * id0_mid
+            id0[n+1] = id0[n] + dt * id1_mid
+            id1[n+1] = id1[n] + dt * id2_mid
+
+    else:
+        print("Please use a valid method input!")
 
     if plot:
         t_array = np.linspace(0, total_t, n_steps)
@@ -49,9 +66,9 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
     Numerically solves for the electric field due to a linear charge distribution
     
     Params
-    lamda_lin: linear charge density, C/m
-    length: length of charge distribution, m (note, charge distribution will lay between x=0 and x=length)
-    dx: step size
+    lamda_lin: linear charge density, Coulombs per meter
+    length: length of charge distribution, meters (note, charge distribution will lay between x=0 and x=length)
+    dx: step size, meters
     eval_points: array of test points
         for example, eval_points = np.arange(-1.0, 2.1, 0.05)
     method: string, algorithm for numerical integration (Left-Hand Riemann, Midpoint (default), Trapezoid)
@@ -79,6 +96,9 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
                 E_left_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
                 E_right_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
                 E_total = E_total + 0.5 * (E_left_comp + E_right_comp) * dx
+
+            else:
+                print("Please use a valid method input!")
 
         E_total = E_total / (4 * np.pi * eps_n)
         E_arr.append(E_total)
