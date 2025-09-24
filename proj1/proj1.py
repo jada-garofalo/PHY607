@@ -6,13 +6,13 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
     Numerically solves for current as a function of time in an RLC circuit
 
     Params
-    method: string, algorithm for numerical calculation (Euler (default), Symplectic, RK2)
     L: inductance, H
     R: resistance, ohms
     C: capacitance, farads
     id1_init: initial change in current, amps per second
     total_t: total amount of time to sample over
     dt: step size
+    method: string, algorithm for numerical calculation (Euler (default), Symplectic, RK2)
     plot: boolean, if True (default) generates plot of current and its derivatives as functions of time
 
     Returns
@@ -49,11 +49,12 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
     Numerically solves for the electric field due to a linear charge distribution
     
     Params
-    method: string, algorithm for numerical integration (Left-Hand Riemann, Midpoint (default), Trapezoid)
-    lamda: linear charge density, C/m
-    length: length of charge distribution, m
+    lamda_lin: linear charge density, C/m
+    length: length of charge distribution, m (note, charge distribution will lay between x=0 and x=length)
     dx: step size
     eval_points: array of test points
+        for example, eval_points = np.arange(-1.0, 2.1, 0.05)
+    method: string, algorithm for numerical integration (Left-Hand Riemann, Midpoint (default), Trapezoid)
     plot: boolean, if True (default) plots
 
     Returns
