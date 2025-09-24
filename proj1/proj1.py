@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
+def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True, returns=False):
     '''
     Numerically solves for current as a function of time in an RLC-series circuit
 
@@ -14,17 +14,20 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
     dt: step size, seconds
     method: string, algorithm for numerical calculation (Euler (default), Symplectic, RK2, RK4)
     plot: boolean, if True (default) generates plot of current and its derivatives as functions of time
+    returns: boolean, if True (non-default) returns id0, id1, id2, t_array arrays for verification
 
     Returns
-    None
+    None (default)
+        
     '''
     alpha = R / (2 * L)
     omega_n = (L*C)**(-0.5)
     n_steps = int(total_t / dt)
-
-    id0 = np.zeros(n_steps) #0th derivative
-    id1 = np.zeros(n_steps) #1st derivative
-    id2 = np.zeros(n_steps) #2nd derivative
+    t_array = np.linspace(0, total_t, n_steps)
+    
+    id0 = np.zeros(n_steps) #0th derivative of current
+    id1 = np.zeros(n_steps) #1st derivative of current
+    id2 = np.zeros(n_steps) #2nd derivative of current
 
     id1[0] = id1_init
     
@@ -68,9 +71,11 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
 
     else:
         print("Please use a valid method input!")
+    
+    if returns:
+        return id0, id1, id2, t_array
 
     if plot:
-        t_array = np.linspace(0, total_t, n_steps)
         plt.plot(t_array, id0)
         plt.plot
         plt.xlabel('Time (s)')
@@ -79,7 +84,7 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True):
         plt.grid(True)
         plt.show()
 
-def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=True):
+def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=True, returns=False):
     '''
     Numerically solves for the electric field due to a linear charge distribution
     
@@ -91,9 +96,11 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
         for example, eval_points = np.linspace(-1.0, 2.0, 200)
     method: string, algorithm for numerical integration (Left-Hand Riemann, Midpoint (default), Trapezoid, Simpson)
     plot: boolean, if True (default) plots
+    returns: boolean, if True (non-default) returns E_arr array for verification
 
     Returns
-    None
+    None (default)
+    See returns param
     '''
     eps_n = 8.854 * (10**(-12)) #vacuum permittivity
     n_points = int(length / dx)
@@ -118,7 +125,7 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
             elif method=='Simpson':
                 E_left_trap_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
                 E_right_trap_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
-                E_total_trap_comp = 0.5 * (E_left_comp + E_right_comp) * dx
+                E_total_trap_comp = 0.5 * (E_left_trap_comp + E_right_trap_comp) * dx
 
                 x_eval = lower + 0.5 * dx
                 E_midpoint_comp = (lambda_lin * (x_test - x_eval) / abs(x_test - x_eval)**3) * dx
@@ -130,6 +137,9 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
 
         E_total = E_total / (4 * np.pi * eps_n)
         E_arr.append(E_total)
+
+    if returns:
+        return E_arr
 
     if plot:
         plt.plot(eval_points, E_arr)
