@@ -22,7 +22,7 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True, retur
     '''
     alpha = R / (2 * L)
     omega_n = (L*C)**(-0.5)
-    n_steps = int(total_t / dt)
+    n_steps = int(total_t / dt) + 1
     t_array = np.linspace(0, total_t, n_steps)
     
     id0 = np.zeros(n_steps) #0th derivative of current
@@ -45,6 +45,8 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True, retur
  
     elif method=='RK2':
         for n in range(n_steps - 1):
+            id2[n] = -2 * alpha * id1[n] - omega_n**2 * id0[n]
+
             id0_mid = id0[n] + 0.5 * dt * id1[n]
             id1_mid = id1[n] + 0.5 * dt * id2[n]
             id2_mid = -2 * alpha * id1_mid - omega_n**2 * id0_mid
@@ -54,6 +56,8 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True, retur
 
     elif method=='RK4':
         for n in range(n_steps - 1):
+            id2[n] = -2 * alpha * id1[n] - omega_n**2 * id0[n]
+
             k1_d1 = id1[n]
             k1_d2 = -2 * alpha * id1[n] - omega_n**2 * id0[n]
 
@@ -77,7 +81,6 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True, retur
 
     if plot:
         plt.plot(t_array, id0)
-        plt.plot
         plt.xlabel('Time (s)')
         plt.ylabel('Current i(t) (amps)')
         plt.title(f"RLC Circuit Current using {method} Algorithm")
