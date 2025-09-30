@@ -82,17 +82,17 @@ def rlc_circuit(L, R, C, id1_init, total_t, dt, method='Euler', plot=True, retur
     if plot:
         plt.plot(t_array, id0)
         plt.xlabel('Time (s)')
-        plt.ylabel('Current i(t) (amps)')
+        plt.ylabel('Current I(t) (amps)')
         plt.title(f"RLC Circuit Current using {method} Algorithm")
         plt.grid(True)
         plt.show()
 
-def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=True, returns=False):
+def linear_charge(lambda_lin, length, dx, eval_points, method='Left-hand Riemann', plot=True, returns=False):
     '''
     Numerically solves for the electric field due to a linear charge distribution
     
     Params
-    lamda_lin: linear charge density, Coulombs per meter
+    lambda_lin: linear charge density, Coulombs per meter
     length: length of charge distribution, meters (note, charge distribution will lay between x=0 and x=length)
     dx: step size, meters
     eval_points: array of test points
@@ -114,24 +114,24 @@ def linear_charge(lambda_lin, length, dx, eval_points, method='Midpoint', plot=T
             lower = i * dx
             upper = lower + dx
             if method == 'Left-hand Riemann':
-                E_total = E_total + (lambda_lin * (x_test - lower) / abs(x_test - lower)**3) * dx
+                E_total = E_total + (lambda_lin * (lower - x_test) / (abs(x_test - lower)**3)) * dx
             
             elif method == 'Midpoint':
                 x_eval = lower + 0.5 * dx
-                E_total = E_total + (lambda_lin * (x_test - x_eval) / abs(x_test - x_eval)**3) * dx
+                E_total = E_total + (lambda_lin * (x_eval - x_test) / (abs(x_test - x_eval)**3)) * dx
 
             elif method == 'Trapezoid':
-                E_left_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
-                E_right_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
+                E_left_comp = lambda_lin * (lower - x_test) / (abs(x_test - lower)**3)
+                E_right_comp = lambda_lin * (upper - x_test) / (abs(x_test - upper)**3)
                 E_total = E_total + 0.5 * (E_left_comp + E_right_comp) * dx
 
             elif method=='Simpson':
-                E_left_trap_comp = lambda_lin * (x_test - lower) / abs(x_test - lower)**3
-                E_right_trap_comp = lambda_lin * (x_test - upper) / abs(x_test - upper)**3
+                E_left_trap_comp = lambda_lin * (lower - x_test) / (abs(x_test - lower)**3)
+                E_right_trap_comp = lambda_lin * (upper - x_test) / (abs(x_test - upper)**3)
                 E_total_trap_comp = 0.5 * (E_left_trap_comp + E_right_trap_comp) * dx
 
                 x_eval = lower + 0.5 * dx
-                E_midpoint_comp = (lambda_lin * (x_test - x_eval) / abs(x_test - x_eval)**3) * dx
+                E_midpoint_comp = (lambda_lin * (x_eval - x_test) / (abs(x_test - x_eval)**3)) * dx
 
                 E_total = E_total + (E_total_trap_comp / 3) + (2 * E_midpoint_comp / 3)
 
