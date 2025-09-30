@@ -2,7 +2,7 @@ Project 1 README.txt -- Jada Garofalo
 
 Hello! Welcome to my submission for Project 1.
 
-In this directory you will find four files:
+In this directory you will find four files (not including .png figures or ./class_exercises):
   1. README.txt -- this file!
   2. report_proj1.pdf -- my report in .pdf format
   2. proj1.py -- this includes my two primary functions for Project 1
@@ -16,4 +16,5 @@ To that last point, to reproduce the results in my report, please:
 Please ensure the following dependencies are installed, either on your system or current environment:
   1. numpy
   2. matplotlib
+  3. scipy
 
