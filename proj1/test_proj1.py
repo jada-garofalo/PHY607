@@ -126,7 +126,7 @@ def test_rlc_error_plot():
         rmse = (np.nanmean((sol.y[0] - exact)**2))**0.5
         print(f"  dt={dt:.5f}, RMSE={rmse:.7e}")
         errors_scipy.append(rmse)
-    plt.loglog(dts, errors_scipy, 'k--', label='scipy RK45')
+    plt.loglog(dts, errors_scipy, 'k--', label='SciPy RK45 RMSE = 1.14e-3')
 
     plt.xlabel('dt'); plt.ylabel('RMSE')
     plt.title('RLC Circuit Method Comparison vs Step Size')
@@ -180,7 +180,7 @@ def test_linear_charge_error_plot():
         rmse = (np.nanmean((E_num_scipy - E_exact)**2))**0.5
         print(f"  dx={dx:.5f}, RMSE={rmse:.7e}")
         errors_scipy.append(rmse)
-    plt.loglog(dxs, errors_scipy, 'k--', label='scipy quad')
+    plt.loglog(dxs, errors_scipy, 'k--', label='SciPy QUAD RMSE = 2.84e-13')
     plt.xlabel('dx'); plt.ylabel('RMSE')
     plt.title('Linear Charge Field Method Comparison vs Step Size')
     plt.legend(); plt.grid(True, which='both')
