@@ -1,4 +1,4 @@
-class systemClass:
+class System:
     """
     this class contains the functions needed for the overall system
     """
