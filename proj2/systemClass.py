@@ -1,17 +1,40 @@
+import numpy as np
+
 class System:
     """
     this class contains the functions needed for the overall system
     """
     
-    def __init__(self, n_bodies, total_time, time_step):
+    def __init__(self, n_bodies, total_time, time_step, gravity_constant, dimensions):
         # system properties
         self.n_bodies = n_bodies
         self.total_time = total_time
         self.time_step = time_step
+        self.G = gravity_constant
+        self.dim = dimensions
     
-    def accelerations(self):
-    
-        temp = 0
+    def accelerations(self, bodies):
+        """
+        this method should find the acceleration of each body due to gravity
+        forces from all other bodies
+        
+        body i (bi) is the focused body
+        body j (bj) is one of the other bodies
+        a_i = 1/m_i * sum( G*m_i*m_j * (r_j-r_i) / (r_j-r_i)^3 )
+        """
+        accelerations = np.zeros((self.n_bodies,self.dim))
+        for i in range(len(bodies)):
+            acc_temp = np.zeros((1,self.dim))
+            bi = bodies[i]
+            for j in range(len(bodies)):
+                if i == j: # skip when i and j reference the same body
+                    continue
+                bj = bodies[j]
+                acc_temp += (self.G*bi.mass*bj.mass * 
+                            (bj.position-bi.position) / 
+                            np.linalg.norm(bj.position-bi.position)**3)
+            accelerations[i,:] = acc_temp / bi.mass
+        return(accelerations)
     
     def integrate(self):
         """
