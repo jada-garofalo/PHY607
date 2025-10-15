@@ -7,19 +7,23 @@ the time step loop, in which there will be calls to the integration and interact
 
 """
 import numpy as np
+import time as timer
 from systemClass import System
 from bodyClass import Body
 from analysisClass import Analysis
 
+# time the code
+start_time = timer.time()
+
 # choose system parameters
-n_bodies = 20
+n_bodies = 5
 total_time = 10000
 time_step = 0.1
 gravity_constant = 6.6743 * 10**(-11) 
 dimensions = 2 # 2 or 3 for 2D or 3D motion
 
 # choose limits for body mass and initial conditions
-mass_lim = np.array([0.1, 1])*1000
+mass_lim = np.array([0.1, 1])*100
 position0_lim = np.array([-1.0, 1.0])*1
 velocity0_lim = np.array([-1.0, 1.0])*0.0001
 
@@ -45,17 +49,11 @@ for i in range(iterations):
 
 print("vf", bodies[0].velocity)
 
-# analyze...
-system_analysis = Analysis(bodies)
-system_analysis.plot_trajectories()
+# time the code
+end_time = timer.time()
+print("runtime:", end_time-start_time)
 
-# debug section
-#body1 = Body(1,[1,2,3],[4,5,6])
-#print(body1.mass)
-#print(body1.position)
-#print(body1.velocity)
-#print(body1.trajectory)
-#print(body1.compute_energy())
-#print(body1.get_trajectory_values())
-#body1_analysis = Analysis([body1,body1])
-#body1_analysis.plot_trajectories()
+# analyze...
+#system_analysis = Analysis(bodies)
+#system_analysis.plot_trajectories()
+

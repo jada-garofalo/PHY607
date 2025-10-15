@@ -17,23 +17,20 @@ class System:
         """
         this method finds the acceleration of each body due to gravity
         forces from all other bodies
-        
-        body i (bi) is the focused body
-        body j (bj) is one of the other bodies
-        a_i = 1/m_i * sum( G*m_i*m_j * (r_j-r_i) / (r_j-r_i)^3 )
+        a_i = G * sum( m_j * (r_j-r_i) / (r_j-r_i)^3 )
         """
+        positions = [bodies[0].position]
+        masses = np.array([bodies[0].mass])
         accelerations = np.zeros((self.n_bodies,self.dim))
-        for i in range(len(bodies)):
-            acc_temp = np.zeros((1,self.dim))
-            bi = bodies[i]
-            for j in range(len(bodies)):
-                if i == j: # skip when i and j reference the same body
-                    continue
-                bj = bodies[j]
-                acc_temp += (self.G*bi.mass*bj.mass * 
-                            (bj.position-bi.position) / 
-                            np.linalg.norm(bj.position-bi.position)**3)
-            accelerations[i,:] = acc_temp / bi.mass
+        for i in range(self.n_bodies-1):
+            positions = np.append(positions, [bodies[i+1].position],axis=0)
+            masses = np.append(masses, [bodies[i+1].mass], axis=0)
+        for i in range(self.n_bodies):
+            distances = positions - positions[i]
+            distances_cubed = np.array([np.sum(distances**2,1)**1.5]).T
+            distances_cubed[i] = 1 # dont divide by zero
+            accelerations[i] = self.G * np.sum(masses * distances / 
+                                               distances_cubed)
         return accelerations
     
     def integrate(self, bodies):
@@ -47,9 +44,9 @@ class System:
         """
         a = self.accelerations(bodies)
         #print("a", a)
-        v = np.zeros((len(bodies),self.dim))
-        x = np.zeros((len(bodies),self.dim))
-        for i in range(len(bodies)):
+        v = np.zeros((self.n_bodies,self.dim))
+        x = np.zeros((self.n_bodies,self.dim))
+        for i in range(self.n_bodies):
             v[i,:] = bodies[i].velocity
             x[i,:] = bodies[i].position
         v_new = v + a*self.time_step
