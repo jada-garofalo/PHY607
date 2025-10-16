@@ -17,7 +17,7 @@ start_time = timer.time()
 
 # choose system parameters
 n_bodies = 5
-total_time = 10000
+total_time = 20000
 time_step = 0.1
 gravity_constant = 6.6743 * 10**(-11) 
 dimensions = 2 # 2 or 3 for 2D or 3D motion
@@ -34,6 +34,7 @@ n_body_system = System(n_bodies, total_time, time_step, gravity_constant,
 
 # create array of bodies with random values for 
 bodies = np.array([])
+absorbed_bodies = np.array([])
 for i in range(n_bodies):
     mass = np.random.uniform(mass_lim[0], mass_lim[1], 1)
     position = np.random.uniform(position0_lim[0], position0_lim[1], dimensions)
@@ -44,16 +45,27 @@ for i in range(n_bodies):
 iterations = round(total_time/time_step)
 for i in range(iterations):
     x_new, v_new = n_body_system.integrate(bodies)
-    for j in range(n_bodies):
+    for j in range(n_body_system.n_bodies):
         bodies[j].update_state(x_new[j,:], v_new[j,:])
     interaction_list = n_body_system.interaction_detection(bodies)
-    
+    if np.any(interaction_list>-1) == True:
+        # ^ if there are entries to interaction_list
+        
+        # interact
+        bodies, absorbed_bodies_out = n_body_system.interactions(bodies, interaction_list)
+        absorbed_bodies = np.append(absorbed_bodies, absorbed_bodies_out)
+all_bodies = np.append(bodies, absorbed_bodies)
+
+
+
+
+
 
 # time the code
 end_time = timer.time()
 print("runtime:", end_time-start_time)
 
 # analyze...
-system_analysis = Analysis(bodies)
+system_analysis = Analysis(all_bodies)
 system_analysis.plot_trajectories()
 

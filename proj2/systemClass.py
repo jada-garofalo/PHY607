@@ -67,7 +67,7 @@ class System:
         split up into rows for each interaction. The numbers in the matrix are
         the body numbers, where -1 means no body.
         """
-        interaction_list = np.zeros((round(self.n_bodies/2),self.n_bodies))-1
+        interaction_list = np.zeros((round(self.n_bodies/2),self.n_bodies),dtype=int)-1
         positions, _ = self.position_mass_list(bodies)
         for i in range(self.n_bodies):
             distance_vectors = positions - positions[i]
@@ -79,7 +79,6 @@ class System:
                                           
             # check if there are interactions
             if len(temp_interact_list) > 1:
-                print(1)
                 # ^ interaction threshold was met (more than one body listed)
                 
                 # check if interacting bodies are listed in interaction_list
@@ -167,35 +166,55 @@ class System:
                             interaction_list[row_to_append,append_index:len(entries_to_append)] = entries_to_append        
         return interaction_list
     
-    def interactions(self, bodies):
+    def interactions(self, bodies, interaction_list):
         """
         this method should determine the interaction type for any and all
         bodies within interaction distance, and compute and set the updated
         trajectories and masses for those bodies
         """
+        interaction_type = 1
         
+        absorbed_bodies = np.array([])
+        n_interactions = np.sum(np.any(interaction_list>-1,axis=1))
+        
+        for i in range(n_interactions):
+        
+            body_index_list = interaction_list[i,interaction_list[0,:]>-1]
+            print("interation list:")
+            print(interaction_list)
+            # which bodies are interacting
+            interacting_bodies = bodies[body_index_list]
+            
+            # number of interacting bodies
+            n_interacting_bodies = len(interacting_bodies)
+            
+            # something to choose which interaction method is used
             
             
-        # something to choose which interaction method is used
-        
-        
-        n_interacting_bodies = len(interacting_bodies)
-        
-        if interation_type == 1:
-            # fully plastic interaction
-            # m1*v1 + m2*v2 = (m1+m2)*v3
-            mass = 0
-            momentum = 0
-            for i in range(n_interacting_bodies):
-                mass += interacting_bodies[i].mass
-                momentum += (interacting_bodies[i].mass *
-                             interacting_bodies[i].velocity)
-            # write over first interacting body
-            
-            
-        elif interaction_type == 2:
-            # partial plastic interaction
-            1
-        else:
-            # fully elastic interaction
-            1
+            if interaction_type == 1:
+                # fully plastic interaction
+                # m1*v1 + m2*v2 = (m1+m2)*v3
+                mass = 0
+                momentum = 0
+                for j in range(n_interacting_bodies):
+                    mass += interacting_bodies[j].mass
+                    momentum += (interacting_bodies[j].mass *
+                                 interacting_bodies[j].velocity)
+                velocity = momentum/mass
+                # write over first interacting body
+                #interacting_bodies[0].mass = mass
+                #interacting_bodies[0].velocity = velocity
+                bodies[body_index_list[0]].mass = mass
+                bodies[body_index_list[0]].velocity = velocity
+                absorbed_bodies = np.append(absorbed_bodies, bodies[body_index_list[1:]])
+                bodies = np.delete(bodies,body_index_list[1:])
+                self.n_bodies -= n_interacting_bodies-1
+                
+            elif interaction_type == 2:
+                # partial plastic interaction
+                1
+            else:
+                # fully elastic interaction
+                1
+                
+        return bodies, absorbed_bodies
