@@ -41,6 +41,9 @@ for i in range(n_bodies):
     velocity = np.random.uniform(velocity0_lim[0], velocity0_lim[1], dimensions)
     bodies = np.append(bodies, Body(mass, position, velocity))
 
+system_analysis_start = Analysis(bodies)
+system_analysis_start.summarize()
+
 # integrate and update values
 iterations = round(total_time/time_step)
 for i in range(iterations):
@@ -54,18 +57,16 @@ for i in range(iterations):
         # interact
         bodies, absorbed_bodies_out = n_body_system.interactions(bodies, interaction_list)
         absorbed_bodies = np.append(absorbed_bodies, absorbed_bodies_out)
+        
 all_bodies = np.append(bodies, absorbed_bodies)
-
-
-
-
-
 
 # time the code
 end_time = timer.time()
 print("runtime:", end_time-start_time)
 
 # analyze...
-system_analysis = Analysis(all_bodies)
-system_analysis.plot_trajectories()
+system_analysis_end = Analysis(all_bodies)
+system_analysis_end.summarize()
+system_analysis_end.plot_trajectories()
+
 

@@ -23,9 +23,9 @@ class Analysis:
         """
         Compute total system momentum
         """
-        total = np.zeros(3)
+        total = np.zeros(len(self.bodies[0].position))
         for body in self.bodies:
-            total = total +  body.compute_momentum()
+            total += body.compute_momentum()
         return total
 
     def plot_trajectories(self):
@@ -46,6 +46,6 @@ class Analysis:
         """
         energy = self.total_energy()
         momentum = self.total_momentum()
-        print(f"Total kinetic energy: {energy:.3e}")
+        print(f"Total kinetic energy: {energy}")
         print(f"Total momentum: {momentum}")
 

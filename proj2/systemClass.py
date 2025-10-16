@@ -172,7 +172,7 @@ class System:
         bodies within interaction distance, and compute and set the updated
         trajectories and masses for those bodies
         """
-        interaction_type = 1
+        interaction_type = 2
         
         absorbed_bodies = np.array([])
         n_interactions = np.sum(np.any(interaction_list>-1,axis=1))
@@ -180,7 +180,7 @@ class System:
         for i in range(n_interactions):
         
             body_index_list = interaction_list[i,interaction_list[0,:]>-1]
-            print("interation list:")
+            print("interaction table:")
             print(interaction_list)
             # which bodies are interacting
             interacting_bodies = bodies[body_index_list]
@@ -189,7 +189,9 @@ class System:
             n_interacting_bodies = len(interacting_bodies)
             
             # something to choose which interaction method is used
-            
+            #
+            #
+            #
             
             if interaction_type == 1:
                 # fully plastic interaction
@@ -210,11 +212,65 @@ class System:
                 bodies = np.delete(bodies,body_index_list[1:])
                 self.n_bodies -= n_interacting_bodies-1
                 
-            elif interaction_type == 2:
-                # partial plastic interaction
-                1
-            else:
+            elif interaction_type == 2 and n_interacting_bodies == 2:
+                # partial mass transfer fully elastic interaction
+                # must be only 2 bodies interacting
+                
+                x1 = bodies[body_index_list[0]].position
+                x2 = bodies[body_index_list[1]].position
+                v1 = bodies[body_index_list[0]].velocity
+                v2 = bodies[body_index_list[1]].velocity
+                m1a = bodies[body_index_list[0]].mass
+                m2a = bodies[body_index_list[1]].mass
+                
+                # pick mass transfer amount m3 by probability
+                m3 = 0.5*m1a
+                #
+                #
+                #
+                
+                # masses after transfer
+                m1b = m1a-m3
+                m2b = m2a+m3
+                
+                # collision unit normal
+                n = (x1-x2) / np.linalg.norm(x1-x2)
+                # relative velocity
+                vr = v1-v2
+                
+                # velocities after collision
+                v1f = v1 - 2*m2b / (m1b+m2b) * np.dot(vr, n) * n
+                v2f = v2 + 2*m1b / (m1b+m2b) * np.dot(vr, n) * n
+                
+                # update body properties
+                bodies[body_index_list[0]].mass = m1b
+                bodies[body_index_list[1]].mass - m2b
+                bodies[body_index_list[0]].velocity = v1f
+                bodies[body_index_list[1]].velocity = v2f
+                
+                
+            elif interaction_type == 3 and n_interacting_bodies == 2:
                 # fully elastic interaction
-                1
+                # must be only 2 bodies interacting
+                
+                x1 = bodies[body_index_list[0]].position
+                x2 = bodies[body_index_list[1]].position
+                v1 = bodies[body_index_list[0]].velocity
+                v2 = bodies[body_index_list[1]].velocity
+                m1 = bodies[body_index_list[0]].mass
+                m2 = bodies[body_index_list[1]].mass
+                
+                # collision unit normal
+                n = (x1-x2) / np.linalg.norm(x1-x2)
+                # relative velocity
+                vr = v1-v2
+                
+                # velocities after collision
+                v1f = v1 - 2*m2 / (m1+m2) * np.dot(vr, n) * n
+                v2f = v2 + 2*m1 / (m1+m2) * np.dot(vr, n) * n
+                
+                # update body velocities
+                bodies[body_index_list[0]].velocity = v1f
+                bodies[body_index_list[1]].velocity = v2f
                 
         return bodies, absorbed_bodies
