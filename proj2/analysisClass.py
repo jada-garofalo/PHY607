@@ -51,4 +51,26 @@ class Analysis:
         print(f"Total potential energy: {p_energy}")
         print(f"Total energy: {k_energy+p_energy}")
         print(f"Total momentum: {momentum}")
-
+    
+    def system_energy_plot(self,energies,time):
+        """
+        Plot energies vs time
+        """
+        plt.plot(time,energies[:,0],label="kinetic")
+        plt.plot(time,energies[:,1],label="potential")
+        plt.plot(time,energies[:,2],label="total")
+        plt.xlabel("time")
+        plt.ylabel("energy")
+        plt.title("Energy of bodies")
+        plt.legend()
+        plt.show()
+        
+    def bodies_energy_plot(self,k_energies,p_energies,time):
+        """
+        Plot energies vs time
+        """
+        plt.plot(time[1:],k_energies,label="kinetic")
+        plt.xlabel("time")
+        plt.ylabel("energy")
+        plt.title("Kinetic energy of bodies")
+        plt.show()

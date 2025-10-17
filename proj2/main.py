@@ -17,7 +17,7 @@ start_time = timer.time()
 
 # choose system parameters
 n_bodies = 5
-total_time = 1000
+total_time = 10000
 time_step = 0.1
 gravity_constant = 6.6743 * 10**(-11) 
 dimensions = 2 # 2 or 3 for 2D or 3D motion
@@ -41,28 +41,47 @@ for i in range(n_bodies):
     velocity = np.random.uniform(velocity0_lim[0], velocity0_lim[1], dimensions)
     bodies = np.append(bodies, Body(mass, position, velocity))
 
+print("-")
+print("Initial state:")
 system_analysis_start = Analysis(bodies)
 system_analysis_start.summarize(n_body_system)
 
 # integrate and update values
 iterations = round(total_time/time_step)
+time_list = np.linspace(0,total_time,iterations+1)
+energies = np.zeros((iterations+1,3))
+energies[0,0] = Analysis(bodies).total_kinetic_energy()[0]
+energies[0,1] = np.sum(n_body_system.potential_energies(bodies))
+energies[0,2] = energies[0,0]+energies[0,1]
+
+k_energies = np.zeros((iterations,n_bodies))
+p_energies = k_energies
+
 for i in range(iterations):
     x_new, v_new = n_body_system.integrate(bodies)
     for j in range(n_body_system.n_bodies):
         bodies[j].update_state(x_new[j,:], v_new[j,:])
+        k_energies[i,j] = bodies[j].compute_energy()[0]
+        #p_energies[i+1,j] = 
     interaction_list = n_body_system.interaction_detection(bodies)
+    energies[i+1,0] = Analysis(bodies).total_kinetic_energy()[0]
+    energies[i+1,1] = np.sum(n_body_system.potential_energies(bodies))
+    energies[i+1,2] = energies[i,0]+energies[i,1]
     if np.any(interaction_list>-1) == True:
         # ^ if there are entries to interaction_list
         
         # interact
-        bodies, absorbed_bodies_out = n_body_system.interactions(bodies, interaction_list)
+        bodies, absorbed_bodies_out = n_body_system.interactions(bodies,
+                                      interaction_list)
         absorbed_bodies = np.append(absorbed_bodies, absorbed_bodies_out)
         
 all_bodies = np.append(bodies, absorbed_bodies)
-
 # time the code
 end_time = timer.time()
+print("-")
 print("runtime:", end_time-start_time)
+print("-")
+print("Final state:")
 
 # analyze...
 system_analysis_end = Analysis(bodies)
@@ -70,3 +89,6 @@ system_analysis_end.summarize(n_body_system)
 
 system_analysis_trajectories = Analysis(all_bodies)
 system_analysis_trajectories.plot_trajectories()
+
+system_analysis_end.system_energy_plot(energies,time_list)
+system_analysis_end.bodies_energy_plot(k_energies,p_energies,time_list)

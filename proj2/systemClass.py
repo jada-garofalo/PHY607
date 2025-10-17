@@ -16,13 +16,18 @@ class System:
         self.interaction_distance = interaction_distance
     
     def potential_energies(self, bodies):
+        """
+        this method returns a list of potential energy of each body
+        """
         PE = np.zeros((self.n_bodies, 1))
         positions, masses = self.position_mass_list(bodies)
         for i in range(self.n_bodies):
             distances = positions - positions[i]
             distance_magnitudes = np.array([np.sum(distances**2,1)**0.5]).T
+            interaction_distance_list = distance_magnitudes*0+self.interaction_distance
             distance_magnitudes[i] = np.inf # dont divide by zero
-            PE[i] = - self.G * masses[i] * np.sum(masses/distance_magnitudes)
+            interaction_distance_list[i] = np.inf
+            PE[i] = self.G * masses[i] * np.sum(masses*(1/interaction_distance_list-1/distance_magnitudes)) 
         return PE
     
     def accelerations_solver(self, bodies):
@@ -217,14 +222,18 @@ class System:
                 
                 mass = 0
                 momentum = 0
+                mean_position = bodies[body_index_list[0]].position * 0
                 for j in range(n_interacting_bodies):
                     mass += interacting_bodies[j].mass
                     momentum += (interacting_bodies[j].mass *
                                  interacting_bodies[j].velocity)
+                    mean_position += interacting_bodies[j].position
+                mean_position /= n_interacting_bodies
                 velocity = momentum/mass
                 # write over first interacting body
                 bodies[body_index_list[0]].mass = mass
                 bodies[body_index_list[0]].velocity = velocity
+                bodies[body_index_list[0]].position = mean_position
                 absorbed_bodies = np.append(absorbed_bodies, bodies[body_index_list[1:]])
                 bodies = np.delete(bodies,body_index_list[1:])
                 self.n_bodies -= n_interacting_bodies-1
@@ -242,7 +251,6 @@ class System:
                 
                 # pick mass transfer amount m3 by rejection sampling
                 u = np.random.uniform()
-                print(u)
                 f = np.sin(np.pi*u)
                 y = np.random.uniform(size=1000)
                 p = sum(y<f)/len(y)
