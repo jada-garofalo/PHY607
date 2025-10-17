@@ -13,7 +13,7 @@ class Analysis:
         """
         self.bodies = bodies
 
-    def total_energy(self):
+    def total_kinetic_energy(self):
         """
         Compute total system kinetic energy
         """
@@ -40,12 +40,15 @@ class Analysis:
         plt.title("Trajectories of bodies")
         plt.show()
 
-    def summarize(self):
+    def summarize(self,system):
         """
         Print or return statistics
         """
-        energy = self.total_energy()
+        k_energy = self.total_kinetic_energy()
+        p_energy = sum(system.potential_energies(self.bodies))
         momentum = self.total_momentum()
-        print(f"Total kinetic energy: {energy}")
+        print(f"Total kinetic energy: {k_energy}")
+        print(f"Total potential energy: {p_energy}")
+        print(f"Total energy: {k_energy+p_energy}")
         print(f"Total momentum: {momentum}")
 

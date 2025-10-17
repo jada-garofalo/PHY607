@@ -15,6 +15,16 @@ class System:
         self.dim = dimensions
         self.interaction_distance = interaction_distance
     
+    def potential_energies(self, bodies):
+        PE = np.zeros((self.n_bodies, 1))
+        positions, masses = self.position_mass_list(bodies)
+        for i in range(self.n_bodies):
+            distances = positions - positions[i]
+            distance_magnitudes = np.array([np.sum(distances**2,1)**0.5]).T
+            distance_magnitudes[i] = np.inf # dont divide by zero
+            PE[i] = - self.G * masses[i] * np.sum(masses/distance_magnitudes)
+        return PE
+    
     def accelerations_solver(self, bodies):
         """
         this method finds the acceleration of each body due to gravity
@@ -27,7 +37,7 @@ class System:
         for i in range(self.n_bodies):
             distances = positions - positions[i]
             distances_cubed = np.array([np.sum(distances**2,1)**1.5]).T
-            distances_cubed[i] = 1 # dont divide by zero
+            distances_cubed[i] = np.inf # dont divide by zero
             accelerations[i] = self.G * np.sum(masses * distances / 
                                                distances_cubed)
         return accelerations

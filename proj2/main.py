@@ -16,9 +16,9 @@ from analysisClass import Analysis
 start_time = timer.time()
 
 # choose system parameters
-n_bodies = 10
-total_time = 50000
-time_step = 0.1
+n_bodies = 5
+total_time = 100
+time_step = 0.01
 gravity_constant = 6.6743 * 10**(-11) 
 dimensions = 2 # 2 or 3 for 2D or 3D motion
 interaction_distance = 0.001
@@ -42,7 +42,7 @@ for i in range(n_bodies):
     bodies = np.append(bodies, Body(mass, position, velocity))
 
 system_analysis_start = Analysis(bodies)
-system_analysis_start.summarize()
+system_analysis_start.summarize(n_body_system)
 
 # integrate and update values
 iterations = round(total_time/time_step)
@@ -65,8 +65,8 @@ end_time = timer.time()
 print("runtime:", end_time-start_time)
 
 # analyze...
-system_analysis_end = Analysis(all_bodies)
-system_analysis_end.summarize()
-system_analysis_end.plot_trajectories()
+system_analysis_end = Analysis(bodies)
+system_analysis_end.summarize(n_body_system)
 
-
+system_analysis_trajectories = Analysis(all_bodies)
+system_analysis_trajectories.plot_trajectories()
