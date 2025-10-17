@@ -64,7 +64,7 @@ class System:
             v[i,:] = bodies[i].velocity
             x[i,:] = bodies[i].position
         v_new = v + a*self.time_step
-        x_new = x + v*self.time_step
+        x_new = x + v_new*self.time_step
         
         return x_new, v_new
     

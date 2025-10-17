@@ -17,8 +17,8 @@ start_time = timer.time()
 
 # choose system parameters
 n_bodies = 5
-total_time = 100
-time_step = 0.01
+total_time = 1000
+time_step = 0.1
 gravity_constant = 6.6743 * 10**(-11) 
 dimensions = 2 # 2 or 3 for 2D or 3D motion
 interaction_distance = 0.001
