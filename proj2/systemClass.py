@@ -232,14 +232,12 @@ class System:
                 
                 # pick mass transfer amount m3 by rejection sampling
                 u = np.random.uniform()
-                f = sin(np.pi*u)
-                y = np.random.uniform(size=100)
+                print(u)
+                f = np.sin(np.pi*u)
+                y = np.random.uniform(size=1000)
                 p = sum(y<f)/len(y)
                 print(p*100, "% mass transfer")
                 m3 = p*m1a
-                #
-                #
-                #
                 
                 # masses after transfer
                 m1b = m1a-m3
