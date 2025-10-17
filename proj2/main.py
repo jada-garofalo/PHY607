@@ -16,7 +16,7 @@ from analysisClass import Analysis
 start_time = timer.time()
 
 # choose system parameters
-n_bodies = 5
+n_bodies = 10
 total_time = 20000
 time_step = 0.1
 gravity_constant = 6.6743 * 10**(-11) 

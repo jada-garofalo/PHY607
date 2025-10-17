@@ -172,7 +172,6 @@ class System:
         bodies within interaction distance, and compute and set the updated
         trajectories and masses for those bodies
         """
-        interaction_type = 2
         
         absorbed_bodies = np.array([])
         n_interactions = np.sum(np.any(interaction_list>-1,axis=1))
@@ -188,14 +187,24 @@ class System:
             # number of interacting bodies
             n_interacting_bodies = len(interacting_bodies)
             
-            # something to choose which interaction method is used
-            #
-            #
-            #
+            # inverse cdf to choose which interaction method is used
+            u = np.random.uniform()
+            a = 2.5
+            x = u**(1/a) # exponential dist
+            if x <= 1/3:
+                interaction_type = 3
+                print("elastic collision interaction occured")
+            elif x > 2/3:
+                interaction_type = 1
+                print("plastic collision interaction occured")
+            else:
+                interaction_type = 2
+                print("elastic collision with partial mass transfer interaction occured")
             
             if interaction_type == 1:
                 # fully plastic interaction
                 # m1*v1 + m2*v2 = (m1+m2)*v3
+                
                 mass = 0
                 momentum = 0
                 for j in range(n_interacting_bodies):
@@ -204,8 +213,6 @@ class System:
                                  interacting_bodies[j].velocity)
                 velocity = momentum/mass
                 # write over first interacting body
-                #interacting_bodies[0].mass = mass
-                #interacting_bodies[0].velocity = velocity
                 bodies[body_index_list[0]].mass = mass
                 bodies[body_index_list[0]].velocity = velocity
                 absorbed_bodies = np.append(absorbed_bodies, bodies[body_index_list[1:]])
@@ -223,8 +230,13 @@ class System:
                 m1a = bodies[body_index_list[0]].mass
                 m2a = bodies[body_index_list[1]].mass
                 
-                # pick mass transfer amount m3 by probability
-                m3 = 0.5*m1a
+                # pick mass transfer amount m3 by rejection sampling
+                u = np.random.uniform()
+                f = sin(np.pi*u)
+                y = np.random.uniform(size=100)
+                p = sum(y<f)/len(y)
+                print(p*100, "% mass transfer")
+                m3 = p*m1a
                 #
                 #
                 #
@@ -247,7 +259,6 @@ class System:
                 bodies[body_index_list[1]].mass - m2b
                 bodies[body_index_list[0]].velocity = v1f
                 bodies[body_index_list[1]].velocity = v2f
-                
                 
             elif interaction_type == 3 and n_interacting_bodies == 2:
                 # fully elastic interaction
