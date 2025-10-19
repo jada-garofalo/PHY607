@@ -23,11 +23,13 @@ class System:
         positions, masses = self.position_mass_list(bodies)
         for i in range(self.n_bodies):
             distances = positions - positions[i]
-            distance_magnitudes = np.array([np.sum(distances**2,1)**0.5]).T
-            interaction_distance_list = distance_magnitudes*0+self.interaction_distance
+            distance_magnitudes = np.array([np.sum(distances**2, 1)**0.5]).T
+            interaction_distance_list = (distance_magnitudes*0 +
+                                         self.interaction_distance)
             distance_magnitudes[i] = np.inf # dont divide by zero
             interaction_distance_list[i] = np.inf
-            PE[i] = self.G * masses[i] * np.sum(masses*(1/interaction_distance_list-1/distance_magnitudes)) 
+            PE[i] = self.G * masses[i] * np.sum(masses *
+            (1/interaction_distance_list - 1/distance_magnitudes)) 
         return PE
     
     def accelerations_solver(self, bodies):
@@ -41,9 +43,9 @@ class System:
         positions, masses = self.position_mass_list(bodies)
         for i in range(self.n_bodies):
             distances = positions - positions[i]
-            distances_cubed = np.array([np.sum(distances**2,1)**1.5]).T
+            distances_cubed = np.array([np.sum(distances**2, 1)**1.5]).T
             distances_cubed[i] = np.inf # dont divide by zero
-            accelerations[i] = self.G * np.sum(masses * distances / 
+            accelerations[i] = self.G * np.sum(masses * distances /
                                                distances_cubed)
         return accelerations
     
@@ -82,11 +84,13 @@ class System:
         split up into rows for each interaction. The numbers in the matrix are
         the body numbers, where -1 means no body.
         """
-        interaction_list = np.zeros((round(self.n_bodies/2),self.n_bodies),dtype=int)-1
+        interaction_list = np.zeros((round(self.n_bodies/2), self.n_bodies),
+                                    dtype=int) - 1
         positions, _ = self.position_mass_list(bodies)
         for i in range(self.n_bodies):
             distance_vectors = positions - positions[i]
-            distance_magnitudes = np.array([np.sum(distance_vectors**2,axis=1)**0.5]).T
+            distance_magnitudes = np.array([np.sum(distance_vectors**2, 
+                                                   axis=1)**0.5]).T
             
             # temp list of interacting bodies
             temp_interact_list = np.where(distance_magnitudes < 
@@ -98,8 +102,9 @@ class System:
                 
                 # check if interacting bodies are listed in interaction_list
                 if np.any(interaction_list > -1) == False:
-                    # ^ no entries in list, add a row with the interacting bodies
-                    interaction_list[0,0:len(temp_interact_list)] = temp_interact_list
+                    # ^ no entries in list, add row with the interacting bodies
+                    interaction_list[0, 0:len(temp_interact_list)] = (
+                    temp_interact_list)
                     
                 else:
                     # ^ there are entries in interaction_list already
@@ -118,16 +123,21 @@ class System:
                             # combine rows
                             temp_list2 = np.any(mask2, axis=1)
                             rows_to_combine = np.where(temp_list2)[0]
-                            # make a temp array with the entries from each row that needs to be combined
+                            # make a temp array with the entries from each row
+                            # that needs to be combined
                             temp_list3 = np.array([])
                             for j in range(len(rows_to_combine)):
-                                mask = interaction_list[rows_to_combine[j],:] > -1
-                                temp_list3 = np.append(temp_list3, interaction_list[rows_to_combine[j],:][mask])
+                                mask = interaction_list[rows_to_combine[j], 
+                                                        :] > -1
+                                temp_list3 = np.append(temp_list3,
+                                interaction_list[rows_to_combine[j], :][mask])
                             
-                            # set the first row from rows_to_combine to the contents of temp_list3
-                            interaction_list[rows_to_combine[0],0:len(temp_list3)] = temp_list3
-                            # then clear the other rows that are from temp_list3
-                            interaction_list[rows_to_combine[1:],:] = -1
+                            # set the first row from rows_to_combine to the
+                            # contents of temp_list3
+                            interaction_list[rows_to_combine[0],
+                                             0:len(temp_list3)] = temp_list3
+                            # clear the other rows that are from temp_list3
+                            interaction_list[rows_to_combine[1:], :] = -1
                         
                     else:
                         # ^ not all current bodies are in the list
@@ -136,49 +146,61 @@ class System:
                             # ^ they are all in the same row
                             
                             # add missing entries to that row:
-                            # get an array of entries that need to be added to the row
+                            # get array of entries to be added to the row
                             entries_to_append = temp_interact_list[~mask1]
                             
                             # find which row is getting added to
                             row_to_append = np.where(mask2 == True)[0][0]
                             
                             # get the index of the first -1 in the row
-                            append_index = np.where(interaction_list[row_to_append,:]==-1)[0][0]
+                            append_index = np.where(
+                            interaction_list[row_to_append, :]==-1)[0][0]
                             
                             # insert the entries at that index
-                            interaction_list[row_to_append,append_index:len(entries_to_append)] = entries_to_append
+                            interaction_list[row_to_append,
+                            append_index:len(entries_to_append)] = (
+                            entries_to_append)
                             
                         else:
                             # ^ they are not all in the same row
                             
-                            # combine rows, then add missing entries to that row:
+                            # combine rows, add missing entries to that row:
                             # combine rows
                             temp_list2 = np.any(mask2, axis=1)
                             rows_to_combine = np.where(temp_list2)[0]
-                            # make a temp array with the entries from each row that needs to be combined
+                            # make a temp array with the entries from each row
+                            #that needs to be combined
                             temp_list3 = np.array([])
                             for j in range(len(rows_to_combine)):
-                                mask = interaction_list[rows_to_combine[j],:] > -1
-                                temp_list3 = np.append(temp_list3, interaction_list[rows_to_combine[j],:][mask])
-                            # set the first row from rows_to_combine to the contents of temp_list3
-                            interaction_list[rows_to_combine[0],0:len(temp_list3)] = temp_list3
-                            # then clear the other rows that are from temp_list3
-                            interaction_list[rows_to_combine[1:],:] = -1
+                                mask = interaction_list[rows_to_combine[j], 
+                                                        :] > -1
+                                temp_list3 = np.append(temp_list3,
+                                interaction_list[rows_to_combine[j], :][mask])
+                            # set the first row from rows_to_combine to the
+                            # contents of temp_list3
+                            interaction_list[rows_to_combine[0], 
+                                             0:len(temp_list3)] = temp_list3
+                            # clear the other rows that are from temp_list3
+                            interaction_list[rows_to_combine[1:], :] = -1
                             
                             # then add missing entries to that row:
                             # rewrite mask2 with updated interaction_list
-                            mask2 = np.isin(interaction_list, temp_interact_list)
-                            # get an array of entries that need to be added to the row
+                            mask2 = np.isin(interaction_list,
+                                            temp_interact_list)
+                            # get array of entries to be added to the row
                             entries_to_append = temp_interact_list[~mask1]
                             
                             # find which row is getting added to
                             row_to_append = np.where(mask2 == True)[0][0]
                             
                             # get the index of the first -1 in the row
-                            append_index = np.where(interaction_list[row_to_append,:]==-1)[0][0]
+                            append_index = np.where(
+                            interaction_list[row_to_append, :]==-1)[0][0]
                             
                             # insert the entries at that index
-                            interaction_list[row_to_append,append_index:len(entries_to_append)] = entries_to_append        
+                            interaction_list[row_to_append,
+                            append_index:len(entries_to_append)] = (
+                            entries_to_append)        
         return interaction_list
     
     def interactions(self, bodies, interaction_list):
@@ -189,11 +211,11 @@ class System:
         """
         
         absorbed_bodies = np.array([])
-        n_interactions = np.sum(np.any(interaction_list>-1,axis=1))
+        n_interactions = np.sum(np.any(interaction_list>-1, axis=1))
         
         for i in range(n_interactions):
         
-            body_index_list = interaction_list[i,interaction_list[0,:]>-1]
+            body_index_list = interaction_list[i, interaction_list[0, :]>-1]
             print("interaction table:")
             print(interaction_list)
             # which bodies are interacting
@@ -214,7 +236,8 @@ class System:
                 print("plastic collision interaction occured")
             else:
                 interaction_type = 2
-                print("elastic collision with partial mass transfer interaction occured")
+                print("elastic collision with partial mass transfer",
+                      "interaction occured")
             
             if interaction_type == 1:
                 # fully plastic interaction
@@ -234,9 +257,10 @@ class System:
                 bodies[body_index_list[0]].mass = mass
                 bodies[body_index_list[0]].velocity = velocity
                 bodies[body_index_list[0]].position = mean_position
-                absorbed_bodies = np.append(absorbed_bodies, bodies[body_index_list[1:]])
+                absorbed_bodies = np.append(absorbed_bodies, 
+                                            bodies[body_index_list[1:]])
                 bodies = np.delete(bodies,body_index_list[1:])
-                self.n_bodies -= n_interacting_bodies-1
+                self.n_bodies -= n_interacting_bodies - 1
                 
             elif interaction_type == 2 and n_interacting_bodies == 2:
                 # partial mass transfer fully elastic interaction
@@ -251,15 +275,15 @@ class System:
                 
                 # pick mass transfer amount m3 by rejection sampling
                 u = np.random.uniform()
-                f = np.sin(np.pi*u)
+                f = np.sin(np.pi * u)
                 y = np.random.uniform(size=1000)
-                p = sum(y<f)/len(y)
-                print(p*100, "% mass transfer")
-                m3 = p*m1a
+                p = sum(y < f) / len(y)
+                print(p * 100, "% mass transfer")
+                m3 = p * m1a
                 
                 # masses after transfer
-                m1b = m1a-m3
-                m2b = m2a+m3
+                m1b = m1a - m3
+                m2b = m2a + m3
                 
                 # collision unit normal
                 n = (x1-x2) / np.linalg.norm(x1-x2)
