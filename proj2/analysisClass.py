@@ -61,7 +61,7 @@ class Analysis:
         plt.plot(time,energies[:,2],label="total")
         plt.xlabel("time")
         plt.ylabel("energy")
-        plt.title("Energy of bodies")
+        plt.title("Energy of system")
         plt.legend()
         plt.show()
         
@@ -69,8 +69,9 @@ class Analysis:
         """
         Plot energies vs time
         """
+        plt.plot(time[1:],p_energies,label="potential")
         plt.plot(time[1:],k_energies,label="kinetic")
         plt.xlabel("time")
         plt.ylabel("energy")
-        plt.title("Kinetic energy of bodies")
+        plt.title("Kinetic and potential energies of bodies")
         plt.show()
