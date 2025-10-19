@@ -203,7 +203,7 @@ class System:
                             entries_to_append)        
         return interaction_list
     
-    def interactions(self, bodies, interaction_list):
+    def interactions(self, bodies, interaction_list, time):
         """
         this method should determine the interaction type for any and all
         bodies within interaction distance, and compute and set the updated
@@ -216,6 +216,8 @@ class System:
         for i in range(n_interactions):
         
             body_index_list = interaction_list[i, interaction_list[0, :]>-1]
+            print("-")
+            print("interaction at t =", time)
             print("interaction table:")
             print(interaction_list)
             # which bodies are interacting
