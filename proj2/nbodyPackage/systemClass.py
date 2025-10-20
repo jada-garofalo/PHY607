@@ -301,7 +301,7 @@ class System:
                 
                 # update body properties
                 bodies[body_index_list[0]].mass = m1b
-                bodies[body_index_list[1]].mass - m2b
+                bodies[body_index_list[1]].mass = m2b
                 bodies[body_index_list[0]].velocity = v1f
                 bodies[body_index_list[1]].velocity = v2f
                 

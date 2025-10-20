@@ -13,6 +13,8 @@ from bodyClass import Body
 from analysisClass import Analysis
 
 n_simulations = int(input("Enter number of simulations to perform: "))
+# time the code
+start_time_full = timer.time()
 interaction_type_list = np.array([])
 mass_transfer_list = np.array([])
 for k in range(n_simulations):
@@ -47,7 +49,7 @@ for k in range(n_simulations):
         bodies = np.append(bodies, Body(mass, position, velocity))
 
     print("-")
-    print("Initial state:")
+    print("Simulation", k+1, "Initial state:")
     system_analysis_start = Analysis(bodies)
     system_analysis_start.summarize(n_body_system)
 
@@ -90,13 +92,17 @@ for k in range(n_simulations):
     print("-")
     print("runtime:", end_time-start_time)
     print("-")
-    print("Final state:")
+    print("Simulation", k+1, "Final state:")
 
     # analyze...
     system_analysis_end = Analysis(bodies)
     system_analysis_end.summarize(n_body_system)
     
 ### plot probabilities here
+end_time_full = timer.time()
+print("-")
+print("runtime:", end_time_full-start_time_full)
+print("-")
 print(interaction_type_list)
 system_analysis_end.measured_probabilities(interaction_type_list)
 
