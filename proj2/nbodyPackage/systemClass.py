@@ -212,7 +212,8 @@ class System:
         
         absorbed_bodies = np.array([])
         n_interactions = np.sum(np.any(interaction_list>-1, axis=1))
-        
+        interaction_types = np.array([])
+        mass_fractions = np.array([])
         for i in range(n_interactions):
         
             body_index_list = interaction_list[i, interaction_list[0, :]>-1]
@@ -270,8 +271,8 @@ class System:
                 
                 x1 = bodies[body_index_list[0]].position
                 x2 = bodies[body_index_list[1]].position
-                v1 = bodies[body_index_list[0]].velocity
-                v2 = bodies[body_index_list[1]].velocity
+                v1a = bodies[body_index_list[0]].velocity
+                v2a = bodies[body_index_list[1]].velocity
                 m1a = bodies[body_index_list[0]].mass
                 m2a = bodies[body_index_list[1]].mass
                 
@@ -280,21 +281,25 @@ class System:
                 f = np.sin(np.pi * u)
                 y = np.random.uniform(size=1000)
                 p = sum(y < f) / len(y)
+                mass_fractions = np.append(mass_fractions, p)
                 print(p * 100, "% mass transfer")
                 m3 = p * m1a
+                v3 = v1a
                 
-                # masses after transfer
+                # masses and velocities after transfer
                 m1b = m1a - m3
                 m2b = m2a + m3
+                v1b = v1a
+                v2b = (m3*v3 + m2a*v2a) / m2b
                 
                 # collision unit normal
                 n = (x1-x2) / np.linalg.norm(x1-x2)
                 # relative velocity
-                vr = v1-v2
+                vr = v1b-v2b
                 
                 # velocities after collision
-                v1f = v1 - 2*m2b / (m1b+m2b) * np.dot(vr, n) * n
-                v2f = v2 + 2*m1b / (m1b+m2b) * np.dot(vr, n) * n
+                v1f = v1b - 2*m2b / (m1b+m2b) * np.dot(vr, n) * n
+                v2f = v2b + 2*m1b / (m1b+m2b) * np.dot(vr, n) * n
                 
                 # update body properties
                 bodies[body_index_list[0]].mass = m1b
@@ -325,5 +330,6 @@ class System:
                 # update body velocities
                 bodies[body_index_list[0]].velocity = v1f
                 bodies[body_index_list[1]].velocity = v2f
-                
-        return bodies, absorbed_bodies
+            interaction_types = np.append(interaction_types,
+                                          interaction_type)    
+        return bodies, absorbed_bodies, interaction_types, mass_fractions
