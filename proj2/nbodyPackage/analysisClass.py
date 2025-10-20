@@ -75,3 +75,20 @@ class Analysis:
         plt.ylabel("energy")
         plt.title("Kinetic and potential energies of bodies")
         plt.show()
+    
+    def measured_probabilities(self,interaction_type_list):
+        # number of entries
+        n1 = np.sum(np.isin(interaction_type_list,1))
+        n2 = np.sum(np.isin(interaction_type_list,2))
+        n3 = np.sum(np.isin(interaction_type_list,3))
+        n = len(interaction_type_list)
+        
+        # measured probabilities
+        p1 = n1/n # plastic collision
+        p2 = n2/n # elastic collision w/ mass transfer
+        p3 = n3/n # elastic collision
+        
+        print("Measured probabilities for interaction type:")
+        print(p1*100, "% plastic collision")
+        print(p2*100, "% elastic collision with mass transfer")
+        print(p3*100, "% elastic collision")

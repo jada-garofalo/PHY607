@@ -92,13 +92,15 @@ for k in range(n_simulations):
     print("-")
     print("Final state:")
 
+    # analyze...
+    system_analysis_end = Analysis(bodies)
+    system_analysis_end.summarize(n_body_system)
+    
 ### plot probabilities here
 print(interaction_type_list)
-print(mass_transfer_list)
+system_analysis_end.measured_probabilities(interaction_type_list)
 
-# analyze...
-system_analysis_end = Analysis(bodies)
-system_analysis_end.summarize(n_body_system)
+print(mass_transfer_list)
 
 system_analysis_trajectories = Analysis(all_bodies)
 system_analysis_trajectories.plot_trajectories()

@@ -219,8 +219,6 @@ class System:
             body_index_list = interaction_list[i, interaction_list[0, :]>-1]
             print("-")
             print("interaction at t =", time)
-            print("interaction table:")
-            print(interaction_list)
             # which bodies are interacting
             interacting_bodies = bodies[body_index_list]
             
