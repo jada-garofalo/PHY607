@@ -62,7 +62,7 @@ for k in range(n_simulations):
     energies[0, 2] = energies[0, 0] + energies[0, 1]
 
     k_energies = np.zeros((iterations,n_bodies))
-    p_energies = k_energies
+    p_energies = np.zeros((iterations,n_bodies))
 
     for i in range(iterations):
         x_new, v_new = n_body_system.integrate(bodies)
@@ -73,7 +73,7 @@ for k in range(n_simulations):
         interaction_list = n_body_system.interaction_detection(bodies)
         energies[i+1, 0] = Analysis(bodies).total_kinetic_energy()[0]
         energies[i+1, 1] = np.sum(n_body_system.potential_energies(bodies))
-        energies[i+1, 2] = energies[i, 0] + energies[i, 1]
+        energies[i+1, 2] = energies[i+1, 0] + energies[i+1, 1]
         if np.any(interaction_list > -1) == True:
             # ^ if there are entries to interaction_list
             
@@ -97,7 +97,10 @@ for k in range(n_simulations):
     # analyze...
     system_analysis_end = Analysis(bodies)
     system_analysis_end.summarize(n_body_system)
-    
+    system_analysis_end.system_energy_plot(energies, time_list)
+    system_analysis_end.bodies_energy_plot(k_energies, p_energies, time_list)
+    system_analysis_end.plot_trajectories()
+
 ### plot probabilities here
 end_time_full = timer.time()
 print("-")
@@ -105,11 +108,13 @@ print("runtime:", end_time_full-start_time_full)
 print("-")
 print(interaction_type_list)
 system_analysis_end.measured_probabilities(interaction_type_list)
-
 print(mass_transfer_list)
 
+'''
 system_analysis_trajectories = Analysis(all_bodies)
 system_analysis_trajectories.plot_trajectories()
 
 system_analysis_end.system_energy_plot(energies, time_list)
 system_analysis_end.bodies_energy_plot(k_energies, p_energies, time_list)
+'''
+
