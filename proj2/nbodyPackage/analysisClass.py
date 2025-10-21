@@ -74,6 +74,7 @@ class Analysis:
         plt.xlabel("time")
         plt.ylabel("energy")
         plt.title("Kinetic and potential energies of bodies")
+        plt.legend()
         plt.show()
     
     def measured_probabilities(self,interaction_type_list):
