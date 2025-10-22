@@ -8,9 +8,9 @@ the time step loop, in which there will be calls to the integration and interact
 """
 import numpy as np
 import time as timer
-from systemClass import System
-from bodyClass import Body
-from analysisClass import Analysis
+from .systemClass import System
+from .bodyClass import Body
+from .analysisClass import Analysis
 
 n_simulations = int(input("Enter number of simulations to perform: "))
 # time the code
@@ -97,9 +97,9 @@ for k in range(n_simulations):
     # analyze...
     system_analysis_end = Analysis(bodies)
     system_analysis_end.summarize(n_body_system)
+    system_analysis_end.plot_trajectories()
     system_analysis_end.system_energy_plot(energies, time_list)
     system_analysis_end.bodies_energy_plot(k_energies, p_energies, time_list)
-    system_analysis_end.plot_trajectories()
 
 ### plot probabilities here
 end_time_full = timer.time()
