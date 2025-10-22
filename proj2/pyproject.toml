@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nbodyPackage"
+version = "0.0.2"
+description = "An n-body simulation for PHY607 project 2"
+readme = "nbodyPackage/README.txt"
+requires-python = ">=3.7"
+authors = [
+  { name="Will Martin", email="wamartin@syr.edu" },
+  { name="Jada Garofalo", email="jagarofa@syr.edu" },
+]
+dependencies = [
+  "numpy",
+  "scipy",
+  "matplotlib",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+nbody-run = "nbodyPackage.main:main"
+
+[tool.setuptools]
+packages = ["nbodyPackage"]
+

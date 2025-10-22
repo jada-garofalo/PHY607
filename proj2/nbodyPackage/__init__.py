@@ -1,2 +1,4 @@
-def main():
-    #do smth
+from .main import main
+
+__all__ = ["main"]
+
