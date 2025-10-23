@@ -43,6 +43,7 @@ def grad_desc(x0, df, n_steps, step_size):
     else:
         x[i+1:,:] = x[i+1,:]
         print('gradient val =', val[i+1])
+        print('gradient iter =', i)
     return x, val
 
 def newton(x0, df, ddf, n_steps, step_size):
@@ -111,11 +112,13 @@ def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-1
         path.append(simplex[0].copy())
 
     return np.array(path), func(simplex[0]), iteration + 1
-    
-x_grad, val_grad = grad_desc([1.5,0], rosen_der, 100000, 0.001)
-x_newton, val_newton = newton([1.5,0], rosen_der, rosen_hess, 50, 0.2)
-x_neld, _, _ = neld_mead(rosen, [1.5,0])
-x_brute, _ = brute_force(rosen, [(-2,2),(-1,3)])
+
+# bounds = [(-2,2),(-2,2)]
+x0 = [2,2]
+x_grad, val_grad = grad_desc(x0, rosen_der, 100000, 0.0005)
+x_newton, val_newton = newton(x0, rosen_der, rosen_hess, 50, 0.2)
+x_neld, _, _ = neld_mead(rosen, x0)
+x_brute, _ = brute_force(rosen, [(-2,2),(-2,2)])
 
 plt.pcolormesh(X, Y, z, norm='log', vmin=1e-3)
 c = plt.colorbar()
