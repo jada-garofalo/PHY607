@@ -29,5 +29,53 @@ def grad_desc():
 def newton():
     #smth
 
-def neld_mead():
-    #smth
+#x0 is init guess
+def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-10, max_iter=1000):
+    n = len(x0) #dimensions
+    simplex = [x0]
+    for i in range(n):
+        y = x0.copy()
+        y[i] += 0.05  #small perturbation for each dimension
+        simplex.append(y)
+    simplex = np.array(simplex)
+    
+    path = [x0.copy()]
+
+    for iteration in range(max_iter):
+        vals = np.array([func(x) for x in simplex])
+        order = np.argsort(vals)
+        simplex = simplex[order] #reorders simplex from best to worst func value
+        vals = vals[order]
+
+        if np.std(vals) < tolerance:
+            break
+
+        x_best = simplex[0]
+        x_worst = simplex[-1]
+        x_centroid = np.mean(simplex[:-1], axis=0)
+
+        #reflection
+        x_reflect = x_centroid + alpha * (x_centroid - x_worst)
+        f_reflect = func(x_reflect)
+
+        if vals[0] <= f_reflect < vals[-2]:
+            simplex[-1] = x_reflect #accept reflection
+        elif f_reflect < vals[0]:
+            #expansion
+            x_expand = x_centroid + gamma * (x_reflect - x_centroid)
+            if func(x_expand) < f_reflect:
+                simplex[-1] = x_expand
+            else:
+                simplex[-1] = x_reflect
+        else:
+            #contraction
+            x_contract = x_centroid + rho * (x_worst - x_centroid)
+            if func(x_contract) < vals[-1]:
+                simplex[-1] = x_contract
+            else:
+                #shrink
+                simplex = simplex[0] + sigma * (simplex - simplex[0])
+
+        path.append(simplex[0].copy())
+
+    return np.array(path), func(simplex[0]), iteration + 1
