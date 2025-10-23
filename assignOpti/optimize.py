@@ -36,6 +36,13 @@ def grad_desc(x0, df, n_steps, step_size):
         # x_k+1 = x_k + t = x_k - f'(x_k)/f"(x_k)
         x[i+1,:] = x[i,:] - step_size * df(x[i,:])
         val[i+1] = rosen(x[i+1,:])
+        if val[i+1] <= 1e-10:
+            break
+    if i == (n_steps):
+        print('gradient max steps hit, val =', val[i+1])
+    else:
+        x[i+1:,:] = x[i+1,:]
+        print('gradient val =', val[i+1])
     return x, val
 
 def newton(x0, df, ddf, n_steps, step_size):
@@ -70,7 +77,7 @@ def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-1
         order = np.argsort(vals)
         simplex = simplex[order] #reorders simplex from best to worst func value
         vals = vals[order]
-        if simplex[0] <= 1e-10:
+        if all(simplex[0]) <= 1e-10:
             break
         if np.std(vals) < tolerance:
             break
@@ -105,7 +112,7 @@ def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-1
 
     return np.array(path), func(simplex[0]), iteration + 1
     
-x_grad, val_grad = grad_desc([1.5,0], rosen_der, 2000, 0.001)
+x_grad, val_grad = grad_desc([1.5,0], rosen_der, 100000, 0.001)
 x_newton, val_newton = newton([1.5,0], rosen_der, rosen_hess, 50, 0.2)
 x_neld, _, _ = neld_mead(rosen, [1.5,0])
 x_brute, _ = brute_force(rosen, [(-2,2),(-1,3)])
