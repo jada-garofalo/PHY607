@@ -1,6 +1,7 @@
 import numpy
 from matplotlib import pyplot as plt
-from scipy.optimize import rosen
+from scipy.optimize import rosen, rosen_der, rosen_hess
+import numpy as np
 
 x = numpy.arange(-2, 2, .01)
 y = numpy.arange(-1, 3, .01)
@@ -25,6 +26,7 @@ def brute_force(func, bounds, step=0.01):
 
 def grad_desc():
     #smth
+    0
 
 def newton(x0, df, ddf, n_steps, step_size):
     # x0 is initial guess (array)
@@ -88,3 +90,10 @@ def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-1
         path.append(simplex[0].copy())
 
     return np.array(path), func(simplex[0]), iteration + 1
+    
+x_newton = newton([-1,-0.5], rosen_der, rosen_hess, 2, 1)
+
+plt.pcolormesh(X, Y, z, norm='log', vmin=1e-3)
+c = plt.colorbar()
+plt.plot(x_newton[:,0],x_newton[:,1],'-o')
+plt.show()
