@@ -24,9 +24,17 @@ def brute_force(func, bounds, step=0.01):
             best_point = p
     return np.array(best_point), best_val
 
-def grad_desc():
+def grad_desc(x0, df, n_steps, step_size):
     #smth
-    0
+    x = np.zeros((n_steps+1,len(x0)))
+    val = np.zeros((n_steps+1,1))
+    x[0,:] = x0
+    val[0] = rosen(x0)
+    for i in range(n_steps):
+        # x_k+1 = x_k + t = x_k - f'(x_k)/f"(x_k)
+        x[i+1,:] = x[i,:] - step_size * df(x[i,:])
+        val[i+1] = rosen(x[i+1,:])
+    return x, val
 
 def newton(x0, df, ddf, n_steps, step_size):
     # x0 is initial guess (array)
@@ -34,11 +42,14 @@ def newton(x0, df, ddf, n_steps, step_size):
     # ddf is the second derivative of the function (func)
     # n_steps is the number of steps to perform (num)
     x = np.zeros((n_steps+1,len(x0)))
+    val = np.zeros((n_steps+1,1))
     x[0,:] = x0
+    val[0] = rosen(x0)
     for i in range(n_steps):
         # x_k+1 = x_k + t = x_k - f'(x_k)/f"(x_k)
-        x[i+1,:] = x[i,:] - step_size * np.dot(df(x[i,:]), 1/ddf(x[i,:]))
-    return x
+        x[i+1,:] = x[i,:] - step_size * np.dot(np.linalg.inv(ddf(x[i,:])),  df(x[i,:]))
+        val[i+1] = rosen(x[i+1,:])
+    return x, val
 
 #x0 is init guess
 def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-10, max_iter=1000):
@@ -91,9 +102,17 @@ def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-1
 
     return np.array(path), func(simplex[0]), iteration + 1
     
-x_newton = newton([-1,-0.5], rosen_der, rosen_hess, 2, 1)
+x_grad, val_grad = grad_desc([1.5,0], rosen_der, 2000, 0.001)
+x_newton, val_newton = newton([1.5,0], rosen_der, rosen_hess, 50, 0.2)
+x_neld, _, _ = neld_mead(rosen, [1.5,0])
+x_brute, _ = brute_force(rosen, [(-2,2),(-1,3)])
 
 plt.pcolormesh(X, Y, z, norm='log', vmin=1e-3)
 c = plt.colorbar()
-plt.plot(x_newton[:,0],x_newton[:,1],'-o')
+plt.plot(x_newton[:,0], x_newton[:,1], '.-b', label='newton')
+plt.plot(x_grad[:,0], x_grad[:,1], '.-r', label='gradient')
+plt.plot(x_neld[:,0], x_neld[:,1], '.-m', label='neld')
+plt.plot(x_brute[0], x_brute[1], '.c', label='brute')
+plt.legend()
 plt.show()
+
