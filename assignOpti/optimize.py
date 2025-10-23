@@ -26,8 +26,17 @@ def brute_force(func, bounds, step=0.01):
 def grad_desc():
     #smth
 
-def newton():
-    #smth
+def newton(x0, df, ddf, n_steps, step_size):
+    # x0 is initial guess (array)
+    # df is the first derivative of the function (func)
+    # ddf is the second derivative of the function (func)
+    # n_steps is the number of steps to perform (num)
+    x = np.zeros((n_steps+1,len(x0)))
+    x[0,:] = x0
+    for i in range(n_steps):
+        # x_k+1 = x_k + t = x_k - f'(x_k)/f"(x_k)
+        x[i+1,:] = x[i,:] - step_size * np.dot(df(x[i,:]), 1/ddf(x[i,:]))
+    return x
 
 #x0 is init guess
 def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-10, max_iter=1000):
