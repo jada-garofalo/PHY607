@@ -22,6 +22,8 @@ def brute_force(func, bounds, step=0.01):
         if val < best_val:
             best_val = val
             best_point = p
+        if best_val <= 1e-10:
+            break
     return np.array(best_point), best_val
 
 def grad_desc(x0, df, n_steps, step_size):
@@ -68,7 +70,8 @@ def neld_mead(func, x0, alpha=1.0, gamma=2.0, rho=0.5, sigma=0.5, tolerance=1e-1
         order = np.argsort(vals)
         simplex = simplex[order] #reorders simplex from best to worst func value
         vals = vals[order]
-
+        if simplex[0] <= 1e-10:
+            break
         if np.std(vals) < tolerance:
             break
 
