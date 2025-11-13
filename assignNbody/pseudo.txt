@@ -1,0 +1,17 @@
+1. High-level script
+    a. Set initial conditions
+
+2. Simulation methods
+    a. Initialize simulation
+    b. Run simulation for # time steps
+    c. Evolve by 1 time step
+    e. Update positions
+    f. Update velocities
+    g. Check for particle-wall collisions
+    h. Check for particle-ball collisions
+    i. Check for ball-wall collisions
+    j. Compute total energy
+
+3. Variables
+    a. Particle positions & velocities stored as (N,2) arrays
+    b. Ball position & velocity stored as (1,2) array
