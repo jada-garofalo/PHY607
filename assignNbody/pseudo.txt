@@ -5,15 +5,17 @@
     a. Initialize simulation
     b. Run simulation for # time steps
     c. Evolve by 1 time step
-    e. Update positions
-    f. Update velocities
-    g. Check for particle-wall collisions
-    h. Check for particle-ball collisions
-    i. Check for ball-wall collisions
-    j. Compute total energy
+        i. Update velocities
+        ii. Update positions
+    e. Update velocities
+        i. Check for particle-wall collisions
+        ii. Check for particle-ball collisions
+        iii. Check for ball-wall collisions
+    f. Update positions
+    g. Compute total energy
         i. Total kinetic energy of particles
         ii. Ball kinetic energy
-    k. Compute ball acceleration from velocities
+    h. Compute ball acceleration from velocities
 
 3. Plotting
     a. Total system energy over time - incl. also average particle energy and ball energy
@@ -24,3 +26,11 @@
     a. Particle positions & velocities stored as (N,2) arrays
     b. Ball position & velocity stored as (1,2) array
     c. Lists storing past system states - 4 total, storing particle positions & velocities and ball pos. & vel.
+    
+5. Labor division
+    a. Collision checks - Fangyi & Carter
+    b. Plotting & result interpretation - Will & Jada
+    c. Unit tests - Julias
+    d. Simulation initialization & evolve over N timesteps, compute energies & acceleration - Chance
+    e. Evolve 1 timestep, update velocity & postion - Lauren
+    
