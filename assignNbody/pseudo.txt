@@ -11,7 +11,16 @@
     h. Check for particle-ball collisions
     i. Check for ball-wall collisions
     j. Compute total energy
+        i. Total kinetic energy of particles
+        ii. Ball kinetic energy
+    k. Compute ball acceleration from velocities
 
-3. Variables
+3. Plotting
+    a. Total system energy over time - incl. also average particle energy and ball energy
+    b. Force as a function of velocity
+    c. Drag force, velocity as a function of time
+
+4. Variables
     a. Particle positions & velocities stored as (N,2) arrays
     b. Ball position & velocity stored as (1,2) array
+    c. Lists storing past system states - 4 total, storing particle positions & velocities and ball pos. & vel.
