@@ -63,6 +63,36 @@ class ising:
         return s
         
     def Magnetization(self, s):
+        """
+        computes the magnetization of the lattice for each step
+        """
         M = np.sum(s,axis=(1,2)) # magnetization of the lattice at each step
         return M
 
+    def Energy(self,s):
+        """
+        computes the energy of the lattice for each step
+        """
+        E_sum = np.zeros(self.nIter+1)
+        E = np.zeros((self.Ly, self.Lx))
+        for n in range(self.nIter+1):
+            for i in range(self.Lx):
+                for j in range(self.Ly):
+                    if i == 0:
+                        sx_sum = s[n,j,i+1] + s[n,j,self.Lx-1]
+                    elif i == self.Lx-1:
+                        sx_sum = s[n,j,0] + s[n,j,i-1]
+                    else:
+                        sx_sum = s[n,j,i+1] + s[n,j,i-1]
+                    if j == 0:
+                        sy_sum = s[n,j+1,i] + s[n,self.Ly-1,i]
+                    elif j == self.Ly-1:
+                        sy_sum = s[n,0,i] + s[n,j-1,i]
+                    else:
+                        sy_sum = s[n,j+1,i] + s[n,j-1,i]
+                       
+                    E[j,i] = -s[n,j,i]*self.J*(sx_sum+sy_sum)
+                    
+            E_sum[n] = np.sum(E)
+            
+        return E_sum
