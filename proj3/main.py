@@ -1,4 +1,5 @@
 from isingClass import ising
+from analysisClass import analysis
 
 # USER INPUT -------------------------
 Lx = 10 # number of x positions
@@ -13,3 +14,6 @@ ising_2D = ising(Lx, Ly, nIter, J, k, T)
 spin = ising_2D.mcmc_hand_written()
 mag = ising_2D.Magnetization(spin)
 energy = ising_2D.Energy(spin)
+
+an = analysis()
+#tau, rho = analysis.ACL(chain)
