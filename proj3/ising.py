@@ -14,9 +14,9 @@ T = 1
 # SETUP ----------------------------------------------------------------------
 
 # initial spin, random
-s = np.zeros((Ly, Lx, nIter+1))
-s[:,:,0] = np.random.randint(-1, 1, (Ly,Lx))
-s[:,:,0][s[:,:,0]==0] = 1
+s = np.zeros((nIter+1, Ly, Lx))
+s[0,:,:] = np.random.randint(-1, 1, (Ly,Lx))
+s[0,:,:][s[0,:,:]==0] = 1
 
 beta = 1/(k*T)
 
@@ -24,7 +24,7 @@ beta = 1/(k*T)
 
 for n in range(nIter):
     # fill in next page of spin matrix
-    s[:,:,n+1] = s[:,:,n]
+    s[n+1,:,:] = s[n,:,:]
    
     # pick a spin site randomly
     i = np.random.randint(0, Lx)
@@ -33,25 +33,25 @@ for n in range(nIter):
     # calculate change in energy with the flipped spin 
     # (wrap around lattice boundaries)
     if i == 0:
-        sx_sum = s[j,i+1,n] + s[j,Lx-1,n]
+        sx_sum = s[n,j,i+1] + s[n,j,Lx-1]
     elif i == Lx-1:
-        sx_sum = s[j,0,n] + s[j,i-1,n]
+        sx_sum = s[n,j,0] + s[n,j,i-1]
     else:
-        sx_sum = s[j,i+1,n] + s[j,i-1,n]
+        sx_sum = s[n,j,i+1] + s[n,j,i-1]
     if j == 0:
-        sy_sum = s[j+1,i,n] + s[Ly-1,i,n]
+        sy_sum = s[n,j+1,i] + s[n,Ly-1,i]
     elif j == Ly-1:
-        sy_sum = s[0,i,n] + s[j-1,i,n]
+        sy_sum = s[n,0,i] + s[n,j-1,i]
     else:
-        sy_sum = s[j+1,i,n] + s[j-1,i,n]
+        sy_sum = s[n,j+1,i] + s[n,j-1,i]
        
-    dE = 2*s[j,i,n]*J*(sx_sum+sy_sum)
+    dE = 2*s[n,j,i]*J*(sx_sum+sy_sum)
    
     # if the change in energy is not positive, keep the flipped spin
     if dE <= 0:
-        s[j,i,n+1] = -s[j,i,n]
+        s[n+1,j,i] = -s[n,j,i]
     # if the change in energy is positive, keep with probability exp(-beta*dE)
     elif np.random.rand() < np.exp(-beta*dE):
-        s[j,i,n+1] = -s[j,i,n]
+        s[n+1,j,i] = -s[n,j,i]
            
     # repeat
