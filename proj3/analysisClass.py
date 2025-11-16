@@ -1,9 +1,8 @@
 import numpy as np
 
 class analysis:
-
     def __init__(self):
-        
+       return 
     def ACL(self, chain, max_lag=None):
         n = len(chain)
         if max_lag is None:
@@ -19,3 +18,4 @@ class analysis:
             cutoff = len(rho)
         tau = 1.0 + 2.0 * np.sum(rho[1:cutoff])
         return tau, rho
+
