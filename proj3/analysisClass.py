@@ -1,12 +1,15 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class analysis:
     def __init__(self):
-       return 
+       return
+       
     def ACL(self, chain, max_lag=None):
-        n = len(chain)
+        n = len(chain)//2
+        chain = chain[n:]
         if max_lag is None:
-            max_lag = n // 10
+            max_lag = n // 5
         y = chain - np.mean(chain)
         c = np.correlate(y, y, mode='full')
         c = c[n-1 : n-1+max_lag]
@@ -18,4 +21,3 @@ class analysis:
             cutoff = len(rho)
         tau = 1.0 + 2.0 * np.sum(rho[1:cutoff])
         return tau, rho
-

@@ -1,11 +1,12 @@
 import numpy as np
 from isingClass import ising
 from analysisClass import analysis
+import matplotlib.pyplot as plt
 
 # USER INPUT -------------------------
 Lx = 10
-Ly = 20
-nIter = 10000
+Ly = 10
+nIter = 50000
 J = 1
 k = 1
 T = 1
@@ -56,6 +57,31 @@ print(f"ACL Chain 1 = {tau1:.3f}")
 print(f"ACL Chain 2 = {tau2:.3f}")
 print(f"R-hat (magnetization) = {rhat_mag:.5f}")
 print()
+
+# plots -------------------------------------------
+fig1 = plt.figure(1)
+ax1 = fig1.add_subplot(1, 1, 1)
+fig2 = plt.figure(2)
+ax2 = fig2.add_subplot(1, 1, 1)
+fig3 = plt.figure(3)
+ax3 = fig3.add_subplot(1, 1, 1)
+fig4 = plt.figure(4)
+ax4 = fig4.add_subplot(1, 1, 1)
+for n in range(10):
+    s_n = ising_2D.mcmc_hand_written()
+    mag_n = ising_2D.Magnetization(s_n)
+    E_n = ising_2D.Energy(s_n)
+    _, rho_mag_n = an.ACL(mag_n)
+    _, rho_E_n = an.ACL(E_n)
+    ax1.plot(np.linspace(0,len(mag_n),len(mag_n)),mag_n)
+    ax2.plot(np.linspace(0,len(E_n),len(E_n)),E_n)
+    ax3.plot(np.linspace(0,len(rho_mag_n),len(rho_mag_n)),rho_mag_n)
+    ax4.plot(np.linspace(0,len(rho_E_n),len(rho_E_n)),rho_E_n)
+ax1.set_title("trace plot of magnetization")
+ax2.set_title("trace plot of energy")
+ax3.set_title("ACF of magnetization")
+ax4.set_title("ACF of energy")
+plt.show()
 
 # -------------------------------------------------
 # 2. PACKAGE COMPARISON SAMPLER
