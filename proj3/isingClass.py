@@ -63,36 +63,25 @@ class ising:
         return s
         
     def Magnetization(self, s):
-        """
-        computes the magnetization of the lattice for each step
-        """
-        M = np.sum(s,axis=(1,2)) # magnetization of the lattice at each step
-        return M
+        s = np.asarray(s)
+        if s.ndim == 3:
+            return np.sum(s, axis=(1, 2))
+        elif s.ndim == 2:
+            return np.sum(s)
+        else:
+            raise ValueError("s must be 2D or 3D")
 
-    def Energy(self,s):
-        """
-        computes the energy of the lattice for each step
-        """
-        E_sum = np.zeros(self.nIter+1)
-        E = np.zeros((self.Ly, self.Lx))
-        for n in range(self.nIter+1):
-            for i in range(self.Lx):
-                for j in range(self.Ly):
-                    if i == 0:
-                        sx_sum = s[n,j,i+1] + s[n,j,self.Lx-1]
-                    elif i == self.Lx-1:
-                        sx_sum = s[n,j,0] + s[n,j,i-1]
-                    else:
-                        sx_sum = s[n,j,i+1] + s[n,j,i-1]
-                    if j == 0:
-                        sy_sum = s[n,j+1,i] + s[n,self.Ly-1,i]
-                    elif j == self.Ly-1:
-                        sy_sum = s[n,0,i] + s[n,j-1,i]
-                    else:
-                        sy_sum = s[n,j+1,i] + s[n,j-1,i]
-                       
-                    E[j,i] = -s[n,j,i]*self.J*(sx_sum+sy_sum)
-                    
-            E_sum[n] = np.sum(E)
-            
-        return E_sum
+    def energy_config(self, config):
+        right = np.roll(config, -1, axis=1)
+        down = np.roll(config, -1, axis=0)
+        return -self.J * np.sum(config * (right + down))
+
+    def Energy(self, s):
+        s = np.asarray(s)
+        if s.ndim == 3:
+            return np.array([self.energy_config(s[i]) for i in range(s.shape[0])])
+        elif s.ndim == 2:
+            return self.energy_config(s)
+        else:
+            raise ValueError("s must be 2D or 3D")
+
