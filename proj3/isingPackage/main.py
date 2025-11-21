@@ -54,6 +54,7 @@ for J in J_arr:
     print("=======================================")
     print(" HANDWRITTEN METROPOLIS RESULTS")
     print("=======================================")
+    print(f"J = {J}")
     print(f"ACL Chain 1 = {tau1:.3f}")
     print(f"ACL Chain 2 = {tau2:.3f}")
     print(f"R-hat (magnetization) = {rhat_mag:.5f}")
@@ -92,11 +93,13 @@ for J in J_arr:
     ax4.set_ylabel("Autocorrelation")
     plt.show()
     if J < 1:
-        J = 10 * J # file names no decimals
-    fig1.savefig(f"trace_magnetization_J{J}.png")
-    fig2.savefig(f"trace_energy_J{J}.png")
-    fig3.savefig(f"acf_magnetization_J{J}.png")
-    fig4.savefig(f"acf_energy_J{J}.png")
+        k = int(10 * J) # file names no decimals
+    else:
+        k = J
+    fig1.savefig(f"trace_magnetization_J{k}.png")
+    fig2.savefig(f"trace_energy_J{k}.png")
+    fig3.savefig(f"acf_magnetization_J{k}.png")
+    fig4.savefig(f"acf_energy_J{k}.png")
     plt.close(fig1)
     plt.close(fig2)
     plt.close(fig3)
