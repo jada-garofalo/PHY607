@@ -3,6 +3,7 @@ from .isingClass import ising
 from .analysisClass import analysis
 import matplotlib.pyplot as plt
 
+
 # USER INPUT -------------------------
 Lx = 10
 Ly = 10
@@ -11,6 +12,7 @@ J_arr = [0.5, 1] # various J to test
 k = 1
 T = 1
 # ------------------------------------
+
 
 def gelman_rubin(chains):
     """
@@ -32,6 +34,7 @@ def gelman_rubin(chains):
 # -------------------------------------------------
 # 1. HANDWRITTEN MCMC CHAIN
 # -------------------------------------------------
+
 
 for J in J_arr:
     ising_2D = ising(Lx, Ly, nIter, J, k, T)
@@ -104,54 +107,46 @@ for J in J_arr:
     plt.close(fig2)
     plt.close(fig3)
     plt.close(fig4)
-J = 1
+
 
 # -------------------------------------------------
 # 2. PACKAGE COMPARISON SAMPLER
 # -------------------------------------------------
 
+
 import emcee
 
-def log_prior(theta):
-    J = theta[0]
-    if 0 < J < 5:
-        return 0.0
-    return -np.inf
+an = analysis()
+nwalkers = 200
+nsteps   = 50000
 
-def log_likelihood(theta, observed_energy):
-    J = theta[0]
-    #simple forward model: E = -J * (sum neighbors)
-    model_energy = -J * observed_energy
-    return -0.5 * ((observed_energy - model_energy)**2) / (0.1**2)
+for J_fixed in J_arr:
 
-def log_prob(theta, observed_energy):
-    lp = log_prior(theta)
-    if not np.isfinite(lp):
-        return -np.inf
-    return lp + log_likelihood(theta, observed_energy)
+    ising_2D = ising(Lx, Ly, nIter, J_fixed, k, T)
 
-#observed energy from handwritten chain
-obs_energy = energy1.mean()
+    p0 = np.random.choice([-1, 1], size=(nwalkers, Lx*Ly))
 
-ndim = 1
-nwalkers = 20
-p0 = 1.0 + 1e-4 * np.random.randn(nwalkers, ndim)
+    def log_prob(spin_vector):
+        spins = spin_vector.reshape(Lx, Ly)
+        return -ising_2D.Energy([spins])[0]
 
-sampler = emcee.EnsembleSampler(nwalkers, ndim, log_prob, args=[obs_energy])
-sampler.run_mcmc(p0, 5000, progress=True)
+    sampler = emcee.EnsembleSampler(nwalkers, Lx*Ly, log_prob)
+    sampler.run_mcmc(p0, nsteps, progress=True)
 
-flat_samples = sampler.get_chain(discard=1000, thin=10, flat=True)
-J_samples = flat_samples[:, 0]
+    spin_chains = sampler.get_chain(flat=False)
+    mag_chains = [
+        [ising_2D.Magnetization([spin_chains[s, w].reshape(Lx, Ly)])[0] for s in range(nsteps)]
+        for w in range(nwalkers)
+    ]
+    print("=======================================")
+    print("   EMCEE PARAMETER-SAMPLER RESULTS")
+    print("=======================================")
+    rhat_mag = gelman_rubin(mag_chains)
+    print(f"J={J_fixed}")
+    print(f"R-hat (magnetization) EMCEE = {rhat_mag:.5f}")
 
-rhat_J = gelman_rubin([J_samples[:2000], J_samples[2000:4000]])
-tau_J, _ = an.ACL(J_samples)
 
-print("=======================================")
-print("   EMCEE PARAMETER-SAMPLER RESULTS")
-print("=======================================")
-print(f"Mean J = {np.mean(J_samples):.3f}")
-print(f"ACL (J) = {tau_J:.3f}")
-print(f"R-hat(J) = {rhat_J:.5f}")
 
-print("END PROJECT SCRIPT")
+
+
 
