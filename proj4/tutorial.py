@@ -23,6 +23,8 @@ def update(frame):
     ax.set_title(f"T = {t[frame]}")
     line.set_ydata(w[frame,:])
     return (points, line)
-    
-ani = animation.FuncAnimation(fig = fig, func = update, frames = len(t), interval = 30)
+
+frame_rate = 30    
+ani = animation.FuncAnimation(fig = fig, func = update, frames = len(t), interval = frame_rate)
+ani.save(filename="example.gif", fps = frame_rate, writer="pillow")
 plt.show()
