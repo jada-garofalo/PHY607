@@ -24,6 +24,6 @@ def update(frame):
     return (points, line)
     
 frame_rate = 30    
-ani = animation.FuncAnimation(fig = fig, func = update, frames = len(t), interval = frame_rate)
+ani = animation.FuncAnimation(fig = fig, func = update, frames = len(t), interval = 1000/frame_rate)
 ani.save(filename="example.gif", fps = frame_rate, writer="pillow")
 plt.show()
