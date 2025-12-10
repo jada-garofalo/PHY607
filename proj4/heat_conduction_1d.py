@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 # setup/input
 n_elements = 20
@@ -34,9 +35,35 @@ for n in range(n_iterations-1):
     plt.plot(position_list,temp[n,:])
 
 # plot final temperature distribution
-plt.plot   (position_list,temp[n+1,:]) 
+plt.plot(position_list,temp[n+1,:]) 
 plt.xlabel('x')
 plt.ylabel('temp')
 plt.show()
+
+
+# Animate solution
+fig, ax = plt.subplots()
+x = position_list
+t = np.arange(n_iterations)*dt
+T = np.copy(temp)
+line = ax.plot(x, T[0,:], color = "C0")[0]
+points = ax.scatter(x,T[0,:], color = "C0")
+ax.set(xlim = [min(x)-.01,max(x)+.01], ylim = [np.min(T)-.01, np.max(T)+.01], ylabel = "temp", xlabel = "x")
+
+frame_rate = 10
+
+def update(frame):
+    data = np.stack([x, T[frame,:]]).T
+    points.set_offsets(data)
+    
+    ax.set_title(f"{t[frame]:.5} s")
+    line.set_ydata(T[frame,:])
+    return (points, line)
+    
+ani = animation.FuncAnimation(fig = fig, func = update, frames = len(t), interval = 1000/frame_rate)
+ani.save(filename="heat.gif", fps = frame_rate, writer="pillow")
+plt.show()
+
+
 
 
