@@ -7,13 +7,13 @@ from math import comb
 # Problem setup
 # --------------------------------------------------------
 L = 1.0            # beam length
-N = 50            # number of spatial points
-c2 = 50.0          # wave speed squared
+N = 101            # number of spatial points
 dx = L / (N - 1)
 x = np.linspace(0, L, N)
 
-Tmax = 20.0         # total simulation time
-M = 1200           # number of time samples
+Tmax = 5.0         # total simulation time
+c2 = 50
+M = 5000           # number of time samples
 dt =  Tmax / (1000*(M - 1))
 t = np.linspace(0, Tmax, M)
 
@@ -77,7 +77,7 @@ def apply_boundary_conditions(w, v):
 w = np.zeros((M, N))
 
 # initial displacement: smooth bump exciting mode 2 slightly
-w0 = 0.01 * x*(L-x)
+w0 = 0.01 * np.sin(np.pi*L*x)
 v0 = np.zeros_like(w0)
 
 w[0,:] = w0
@@ -97,7 +97,8 @@ for k in range(1, M):
 # --------------------------------------------------------
 # Animation
 # --------------------------------------------------------
-frame_rate = 60 # Animation frame rate
+frame_rate = 100 # Animation frame rate
+frame_skip = 10
 
 epsilon = 0.001 # A small offset to adjust the bounds of the animation window
 fig, ax = plt.subplots()
@@ -106,17 +107,17 @@ points = ax.scatter(x,w[0,:], color = "C0")
 ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w)-epsilon, np.max(w)+epsilon])
 
 def update(frame):
-    data = np.stack([x, w[frame,:]]).T
+    data = np.stack([x, w[frame*frame_skip,:]]).T
     points.set_offsets(data)
 
-    ax.set_title(f"T = {t[frame]:.3f}")
-    line.set_ydata(w[frame,:])
+    ax.set_title(f"T = {t[frame*frame_skip]:.3f}")
+    line.set_ydata(w[frame*frame_skip,:])
     return (points, line)
 
 ani = animation.FuncAnimation(
     fig = fig,
     func = update,
-    frames = len(t),
+    frames = len(t)//frame_skip,
     interval = 1000/frame_rate
 )
 ani.save(filename="example.gif", fps = frame_rate, writer="pillow")
