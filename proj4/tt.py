@@ -123,3 +123,83 @@ ani = animation.FuncAnimation(
 ani.save(filename="example.gif", fps = frame_rate, writer="pillow")
 plt.show()
 
+
+# ========================================================
+# Crank–Nicolson evolution (energy-stable demonstration)
+# ========================================================
+
+
+from scipy.linalg import solve_banded
+
+
+def biharmonic_matrix(N, dx):
+    n = N - 4
+    A = np.zeros((n, n))
+
+    for i in range(n):
+        A[i,i] = 6.0
+        if i-1 >= 0:
+            A[i,i-1] = -4.0
+        if i+1 < n:
+            A[i,i+1] = -4.0
+        if i-2 >= 0:
+            A[i,i-2] = 1.0
+        if i+2 < n:
+            A[i,i+2] = 1.0
+
+    return A / dx**4
+
+
+def step_crank_nicolson(w, v, A, dt, c2):
+    """
+    Advance one timestep using Crank–Nicolson.
+    Operates on interior points only.
+    """
+    I = np.eye(len(w))
+
+    # Linear system for v^{n+1}
+    lhs = I + (dt**2 / 4) * c2 * A
+    rhs = (I - (dt**2 / 4) * c2 * A) @ v - dt * c2 * A @ w
+
+    v_new = np.linalg.solve(lhs, rhs)
+    w_new = w + 0.5 * dt * (v + v_new)
+
+    return w_new, v_new
+
+
+A = biharmonic_matrix(N, dx)
+
+w_cn = np.zeros((M, N))
+v_cn = np.zeros(N)
+
+w_cn[0,:] = w0
+v_cn[:]   = v0
+
+# extract interior
+w_int = w0[2:-2].copy()
+v_int = v0[2:-2].copy()
+
+
+for k in range(1, M):
+    w_int, v_int = step_crank_nicolson(w_int, v_int, A, dt, c2)
+
+    w_cn[k,2:-2] = w_int
+    v_cn[2:-2]   = v_int
+
+    # enforce clamped BCs explicitly
+    w_cn[k,0] = w_cn[k,1] = 0.0
+    w_cn[k,-1] = w_cn[k,-2] = 0.0
+    v_cn[0] = v_cn[1] = 0.0
+    v_cn[-1] = v_cn[-2] = 0.0
+
+
+plt.figure(figsize=(7,4))
+plt.plot(x, w[-1], label="Forward Euler", lw=2)
+plt.plot(x, w_cn[-1], "--", label="Crank–Nicolson", lw=2)
+plt.xlabel("x")
+plt.ylabel("w(x, T)")
+plt.title("Beam displacement at final time")
+plt.legend()
+plt.tight_layout()
+plt.show()
+
