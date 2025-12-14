@@ -7,12 +7,13 @@ from math import comb
 # Problem setup
 # --------------------------------------------------------
 L = 1.0            # beam length
-N = 401            # number of spatial points
+N = 50            # number of spatial points
+c2 = 50.0          # wave speed squared
 dx = L / (N - 1)
 x = np.linspace(0, L, N)
 
-Tmax = 2.0         # total simulation time
-M = 2400           # number of time samples
+Tmax = 20.0         # total simulation time
+M = 1200           # number of time samples
 dt =  Tmax / (1000*(M - 1))
 t = np.linspace(0, Tmax, M)
 
@@ -49,9 +50,9 @@ def nth_derivative(w, n, dx):
 # Time stepping: forward Euler for velocity and position
 # --------------------------------------------------------
 def step_euler(w, v, dx, dt):
-    w_xxxx = nth_derivative(w, 4, dx)
+    w_xxxx = c2 * nth_derivative(w, 4, dx)
     v_new = v + dt * (-w_xxxx)
-    w_new = w + dt * v
+    w_new = w + dt * v_new
     return w_new, v_new
 
 
@@ -96,7 +97,7 @@ for k in range(1, M):
 # --------------------------------------------------------
 # Animation
 # --------------------------------------------------------
-frame_rate = 30 # Animation frame rate
+frame_rate = 60 # Animation frame rate
 
 epsilon = 0.001 # A small offset to adjust the bounds of the animation window
 fig, ax = plt.subplots()
