@@ -4,7 +4,7 @@ import matplotlib.animation as animation
 from math import comb
 
 # --------------------------------------------------------
-# Problem setup
+# Problem setup (feel free to play around with these values!)
 # --------------------------------------------------------
 L = 1.0            # beam length
 N = 101            # number of spatial points
@@ -18,15 +18,14 @@ dt =  Tmax / (1000*(M - 1))
 t = np.linspace(0, Tmax, M)
 
 # --------------------------------------------------------
-# Helper: nth-order centered finite difference
-# Using the formula provided
+# nth-order centered finite difference
+# Using the formula provided, write a function to take the nth spatial derivative
+# format: nth_derivative()
 # --------------------------------------------------------
 def nth_derivative(w, n, dx):
     # result array
     out = np.zeros_like(w)
 
-    # half-step grid offsets:
-    # shift = (n - 2*i)/2 * dx  (index shift = (n - 2*i)/2)
     for i in range(n + 1):
         shift = int((n - 2*i) // 2)
 
