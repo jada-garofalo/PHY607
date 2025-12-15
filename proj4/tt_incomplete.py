@@ -29,8 +29,8 @@ def nth_derivative(w, n, dx):
     for i in range(n + 1):
         shift = int((n - 2*i) // 2)
 
-        # coefficient
-        coef = ((-1)**i) * comb(n, i)
+        # Compute the i-th coefficient using the binomial coefficient comb(n,m)=nCm
+        coef = 
 
         # shifted version of w with zero padding
         if shift > 0:
@@ -45,13 +45,14 @@ def nth_derivative(w, n, dx):
 
 
 # --------------------------------------------------------
-# PDE is w_tt = - w_xxxx
+# PDE is w_tt = w_xxxx
 # Time stepping: forward Euler for velocity and position
+# Fill this in using nth_derivative
 # --------------------------------------------------------
 def step_euler(w, v, dx, dt):
-    w_xxxx = c2 * nth_derivative(w, 4, dx)
-    v_new = v + dt * (-w_xxxx)
-    w_new = w + dt * v_new
+    w_xxxx = 
+    v_new = 
+    w_new = 
     return w_new, v_new
 
 
@@ -62,10 +63,9 @@ def step_euler(w, v, dx, dt):
 # enforce v same way.
 # --------------------------------------------------------
 def apply_boundary_conditions(w, v):
-    w[0] = w[1] = 0.0
-    w[-1] = w[-2] = 0.0
-    v[0] = v[1] = 0.0
-    v[-1] = v[-2] = 0.0
+    # Fill this function in!
+    
+    
     return w, v
 
 
