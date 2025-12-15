@@ -103,7 +103,7 @@ epsilon = 0.001 # A small offset to adjust the bounds of the animation window
 fig, ax = plt.subplots()
 line = ax.plot(x, w[0,:], color = "C0")[0]
 points = ax.scatter(x,w[0,:], color = "C0")
-ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w)-epsilon, np.max(w)+epsilon])
+ax.set(xlim = [-epsilon,L+epsilon], ylim = [-100, 100])
 
 def update(frame):
     data = np.stack([x, w[frame*frame_skip,:]]).T
@@ -119,7 +119,7 @@ ani = animation.FuncAnimation(
     frames = len(t)//frame_skip,
     interval = 1000/frame_rate
 )
-#ani.save(filename="example.gif", fps = frame_rate, writer="pillow")
+ani.save(filename="example.gif", fps = frame_rate, writer="pillow")
 plt.show()
 
 
@@ -211,16 +211,16 @@ epsilon = 0.001 # A small offset to adjust the bounds of the animation window
 fig, ax = plt.subplots()
 line2 = ax.plot(x, w_cn[0,:], color = "C0")[0]
 points2 = ax.scatter(x, w_cn[-1], label="Crank–Nicolson", lw=2)
-ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w)-epsilon, np.max(w)+epsilon])
+ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w_cn)-epsilon, np.max(w_cn)+epsilon])
 ax.set_xlabel("x position")
 ax.set_ylabel("displacement w(x)") 
 
 def update2(frame):
-    data = np.stack([x, w[frame*frame_skip,:]]).T
+    data = np.stack([x, w_cn[frame*frame_skip,:]]).T
     points2.set_offsets(data)
 
     ax.set_title(f"T = {t[frame*frame_skip]:.3f}")
-    line2.set_ydata(w[frame*frame_skip,:])
+    line2.set_ydata(w_cn[frame*frame_skip,:])
     return (points2, line2)
 
 ani = animation.FuncAnimation(

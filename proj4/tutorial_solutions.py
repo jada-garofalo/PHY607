@@ -51,7 +51,7 @@ def nth_derivative(w, n, dx):
 def step_euler(w, v, dx, dt):
     w_xxxx = c2 * nth_derivative(w, 4, dx)
     v_new = v + dt * (-w_xxxx)
-    w_new = w + dt * v_new
+    w_new = w + dt * v
     return w_new, v_new
 
 
@@ -103,7 +103,7 @@ epsilon = 0.001 # A small offset to adjust the bounds of the animation window
 fig, ax = plt.subplots()
 line = ax.plot(x, w[0,:], color = "C0")[0]
 points = ax.scatter(x,w[0,:], color = "C0")
-ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w)-epsilon, np.max(w)+epsilon])
+ax.set(xlim = [-epsilon,L+epsilon], ylim = [-100, 100])
 
 def update(frame):
     data = np.stack([x, w[frame*frame_skip,:]]).T
@@ -211,16 +211,16 @@ epsilon = 0.001 # A small offset to adjust the bounds of the animation window
 fig, ax = plt.subplots()
 line2 = ax.plot(x, w_cn[0,:], color = "C0")[0]
 points2 = ax.scatter(x, w_cn[-1], label="Crank–Nicolson", lw=2)
-ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w)-epsilon, np.max(w)+epsilon])
+ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w_cn)-epsilon, np.max(w_cn)+epsilon])
 ax.set_xlabel("x position")
 ax.set_ylabel("displacement w(x)") 
 
 def update2(frame):
-    data = np.stack([x, w[frame*frame_skip,:]]).T
+    data = np.stack([x, w_cn[frame*frame_skip,:]]).T
     points2.set_offsets(data)
 
     ax.set_title(f"T = {t[frame*frame_skip]:.3f}")
-    line2.set_ydata(w[frame*frame_skip,:])
+    line2.set_ydata(w_cn[frame*frame_skip,:])
     return (points2, line2)
 
 ani = animation.FuncAnimation(
