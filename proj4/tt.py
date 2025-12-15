@@ -202,3 +202,32 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
+
+# crank-nicolson animation
+frame_rate = 100 # Animation frame rate
+frame_skip = 50
+
+epsilon = 0.001 # A small offset to adjust the bounds of the animation window
+fig, ax = plt.subplots()
+line2 = ax.plot(x, w_cn[0,:], color = "C0")[0]
+points2 = ax.scatter(x, w_cn[-1], label="Crank–Nicolson", lw=2)
+ax.set(xlim = [-epsilon,L+epsilon], ylim = [np.min(w)-epsilon, np.max(w)+epsilon])
+ax.set_xlabel("x position")
+ax.set_ylabel("displacement w(x)") 
+
+def update2(frame):
+    data = np.stack([x, w[frame*frame_skip,:]]).T
+    points2.set_offsets(data)
+
+    ax.set_title(f"T = {t[frame*frame_skip]:.3f}")
+    line2.set_ydata(w[frame*frame_skip,:])
+    return (points2, line2)
+
+ani = animation.FuncAnimation(
+    fig = fig,
+    func = update2,
+    frames = len(t)//frame_skip,
+    interval = 1000/frame_rate
+)
+#ani.save(filename="cn.gif", fps = frame_rate, writer="pillow")
+plt.show()
